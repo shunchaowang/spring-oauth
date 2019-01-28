@@ -1,0 +1,17 @@
+allprojects {
+  repositories {
+    jcenter()
+    mavenCentral()
+  }
+}
+
+subprojects {
+  ext {
+    springBootVersion = '2.1.2.RELEASE'
+    springCloudVersion = 'Greenwich.RELEASE'
+  }
+
+  group = 'edu.osumc.bmi'
+  version = '1.0.0'
+}
+
