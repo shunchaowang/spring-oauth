@@ -26,6 +26,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
     implementation 'org.springframework.session:spring-session-core'
+
+    implementation('org.apache.commons:commons-lang3:3.8.1')
+    implementation('org.apache.commons:commons-collections4:4.2')
+    implementation('commons-beanutils:commons-beanutils:1.9.3')
+    
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
