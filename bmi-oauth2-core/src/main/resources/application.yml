@@ -1,0 +1,13 @@
+# dev for development, prod for production, default to run with H2 database
+spring:
+  profiles:
+    active: default
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    ROOT: ERROR
+    edu.osumc.bmi.oauth2.core: DEBUG
