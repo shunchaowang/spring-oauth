@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:db-test.properties")
 @Profile("test")
-public class TestAuthDataSource implements AuthDataSource {
+public class TestDataSource implements AuthDataSource {
 
   @Autowired private Environment env;
 

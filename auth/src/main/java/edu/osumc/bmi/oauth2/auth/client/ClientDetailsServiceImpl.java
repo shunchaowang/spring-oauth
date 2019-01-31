@@ -3,9 +3,8 @@ package edu.osumc.bmi.oauth2.auth.client;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
-import org.springframework.stereotype.Component;
 
-//@Component("clientDetailsService")
+// @Component("clientDetailsService")
 public class ClientDetailsServiceImpl implements ClientDetailsService {
   /**
    * Load a client by the client id. This method must not return null.

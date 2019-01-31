@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:db-dev.properties")
 @Profile("dev")
-public class DevAuthDataSource implements AuthDataSource {
+public class DevDataSource implements AuthDataSource {
 
   @Autowired private Environment env;
 

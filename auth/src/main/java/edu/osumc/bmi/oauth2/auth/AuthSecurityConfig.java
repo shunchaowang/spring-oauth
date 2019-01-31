@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
-public class BmiOauth2AuthSecurityConfig extends WebSecurityConfigurerAdapter {
+public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
   /**
    * Override this method to configure the {@link HttpSecurity}. Typically subclasses should not
