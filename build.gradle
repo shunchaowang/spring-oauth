@@ -11,7 +11,7 @@ subprojects {
         springCloudVersion = 'Greenwich.RELEASE'
     }
 
-    group = 'edu.osumc.bmi'
+    group = 'edu.osumc.bmi.oauth2'
     version = '1.0.0'
 }
 

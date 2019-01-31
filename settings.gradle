@@ -1,3 +1,3 @@
 rootProject.name = 'bmi-oauth2'
 
-include 'bmi-oauth2-core', 'bmi-oauth2-auth', 'bmi-oauth2-admin'
+include 'core', 'service', 'auth', 'admin'
