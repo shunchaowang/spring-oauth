@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@Component("userDetailsService")
-public class UserDetailsServiceImpl implements UserDetailsService {
+@Component
+public class AuthUserDetailsService implements UserDetailsService {
 
   @Autowired private PasswordEncoder passwordEncoder;
   /**

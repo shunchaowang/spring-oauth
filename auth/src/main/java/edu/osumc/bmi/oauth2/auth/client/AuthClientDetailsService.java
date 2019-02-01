@@ -5,7 +5,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 
 // @Component("clientDetailsService")
-public class ClientDetailsServiceImpl implements ClientDetailsService {
+public class AuthClientDetailsService implements ClientDetailsService {
   /**
    * Load a client by the client id. This method must not return null.
    *
