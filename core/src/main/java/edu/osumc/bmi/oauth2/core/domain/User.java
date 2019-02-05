@@ -1,3 +1,107 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
-public class User {}
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
+public class User {
+
+  @Id @GeneratedValue private long id;
+
+  @Column(nullable = false, length = 64, unique = true)
+  private String username;
+
+  @Column(nullable = false)
+  private String password;
+
+  @Column(nullable = false)
+  private boolean active;
+
+  @Version private long version;
+
+  @ManyToMany
+  @JoinTable(
+      name = "users_clients",
+      joinColumns = @JoinColumn(name = "user_id", nullable = false),
+      inverseJoinColumns = @JoinColumn(name = "client_id", nullable = false))
+  private Set<Client> clients;
+
+  @ManyToMany
+  @JoinTable(
+      name = "users_roles",
+      joinColumns = @JoinColumn(name = "user_id", nullable = false),
+      inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
+  private Set<Role> roles;
+
+  public User() {
+
+    clients = new HashSet<>();
+    roles = new HashSet<>();
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public void setId(long id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
+  public long getVersion() {
+    return version;
+  }
+
+  public void setVersion(long version) {
+    this.version = version;
+  }
+
+  public Set<Client> getClients() {
+    return clients;
+  }
+
+  public void setClients(Set<Client> clients) {
+    this.clients = clients;
+  }
+
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
+}
