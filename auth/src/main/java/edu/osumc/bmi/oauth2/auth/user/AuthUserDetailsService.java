@@ -1,18 +1,17 @@
 package edu.osumc.bmi.oauth2.auth.user;
 
+import edu.osumc.bmi.oauth2.core.domain.User;
+import edu.osumc.bmi.oauth2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AuthUserDetailsService implements UserDetailsService {
 
-  @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired private UserService userService;
   /**
    * Locates the user based on the username. In the actual implementation, the search may possibly
    * be case sensitive, or case insensitive depending on how the implementation instance is
@@ -26,9 +25,7 @@ public class AuthUserDetailsService implements UserDetailsService {
    */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return new User(
-        username,
-        passwordEncoder.encode("123456"),
-        AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+    User user = userService.get(username);
+    return new AuthUserDetails(user);
   }
 }
