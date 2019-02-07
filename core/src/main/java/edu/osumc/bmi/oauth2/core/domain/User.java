@@ -1,5 +1,7 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +11,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -103,5 +103,41 @@ public class User {
 
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
+  }
+
+  public static UserBuilder builder = new UserBuilder();
+
+  public static class UserBuilder {
+
+    private String username;
+
+    private String password;
+
+    private boolean active;
+
+    public UserBuilder() {}
+
+    public UserBuilder username(String username) {
+      this.username = username;
+      return this;
+    }
+
+    public UserBuilder password(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public UserBuilder active(boolean active) {
+      this.active = active;
+      return this;
+    }
+
+    public User build() {
+      User user = new User();
+      user.setActive(this.active);
+      user.setUsername(this.username);
+      user.setPassword(this.password);
+      return user;
+    }
   }
 }
