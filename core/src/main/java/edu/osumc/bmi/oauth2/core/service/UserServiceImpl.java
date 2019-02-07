@@ -38,12 +38,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User get(long id) {
-    return null;
+    return userRepository.getOne(id);
   }
 
   @Override
   public User get(String username) {
-    return null;
+    return userRepository.findByUsername(username);
   }
 
   @Override
