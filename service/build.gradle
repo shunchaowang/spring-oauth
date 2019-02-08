@@ -26,6 +26,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
+
+//    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
