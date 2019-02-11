@@ -1,5 +1,6 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "oauth_client_details")
-public class OAuthClientDetail {
+public class OAuthClientDetail implements Serializable {
 
     @Id
     @GeneratedValue

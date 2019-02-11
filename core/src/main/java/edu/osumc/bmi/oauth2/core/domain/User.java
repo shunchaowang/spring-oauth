@@ -1,9 +1,11 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,7 +16,7 @@ import javax.persistence.Version;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
   @Id @GeneratedValue private long id;
 
@@ -29,14 +31,14 @@ public class User {
 
   @Version private long version;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "users_clients",
       joinColumns = @JoinColumn(name = "user_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "client_id", nullable = false))
   private Set<Client> clients;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id", nullable = false),

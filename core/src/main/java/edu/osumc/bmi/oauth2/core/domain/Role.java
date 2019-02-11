@@ -1,5 +1,6 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role implements Serializable {
 
   @Id @GeneratedValue private long id;
 

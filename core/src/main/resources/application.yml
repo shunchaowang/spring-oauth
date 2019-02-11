@@ -7,7 +7,7 @@
 #      enabled: true
 #      path: /h2-console
 
-logging:
-  level:
-    ROOT: ERROR
-    edu.osumc.bmi.oauth2.core: DEBUG
+#logging:
+#  level:
+#    ROOT: ERROR
+#    edu.osumc.bmi.oauth2.core: DEBUG

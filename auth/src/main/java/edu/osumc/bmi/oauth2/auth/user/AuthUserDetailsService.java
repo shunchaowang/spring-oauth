@@ -2,6 +2,8 @@ package edu.osumc.bmi.oauth2.auth.user;
 
 import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthUserDetailsService implements UserDetailsService {
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired private UserService userService;
   /**
@@ -25,7 +29,9 @@ public class AuthUserDetailsService implements UserDetailsService {
    */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    logger.info(username);
     User user = userService.get(username);
+    logger.info("" + user.getId());
     return new AuthUserDetails(user);
   }
 }

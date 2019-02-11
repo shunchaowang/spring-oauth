@@ -17,6 +17,7 @@ public class AuthUserDetails implements UserDetails {
   private User user;
 
   public AuthUserDetails(User user) {
+    logger.info("" + user.getId());
     this.user = user;
   }
 
