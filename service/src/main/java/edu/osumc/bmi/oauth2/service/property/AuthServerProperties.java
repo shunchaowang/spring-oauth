@@ -1,6 +1,6 @@
 package edu.osumc.bmi.oauth2.service.property;
 
-public class OAuth2Properties {
+public class AuthServerProperties {
 
   private String checkTokenEndpointUrl;
   private String clientId;

@@ -5,13 +5,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "bmi.oauth2")
 public class ServiceProperties {
 
-  private OAuth2Properties oauth2 = new OAuth2Properties();
+  private AuthServerProperties authServer = new AuthServerProperties();
 
-  public OAuth2Properties getOauth2() {
-    return oauth2;
+  public AuthServerProperties getAuthServer() {
+    return authServer;
   }
 
-  public void setOauth2(OAuth2Properties oauth2) {
-    this.oauth2 = oauth2;
+  public void setAuthServer(AuthServerProperties authServer) {
+    this.authServer = authServer;
   }
 }

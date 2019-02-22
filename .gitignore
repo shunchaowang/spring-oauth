@@ -42,6 +42,7 @@
 **/bin
 **/.project
 **/.settings
+**/.classpath
 
 # .DS_Store mac file
 **/.DS_Store

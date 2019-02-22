@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 
 import javax.sql.DataSource;
 
@@ -15,11 +16,14 @@ import javax.sql.DataSource;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-  @Autowired private AuthenticationManager authenticationManager;
+  @Autowired
+  private AuthenticationManager authenticationManager;
 
-  @Autowired private DataSource dataSource;
+  @Autowired
+  private DataSource dataSource;
 
-  @Autowired private TokenStore tokenStore;
+  @Autowired
+  private TokenStore tokenStore;
 
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -31,5 +35,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     // AuthenticationManager is needed for password grant type
     endpoints.tokenStore(tokenStore).authenticationManager(authenticationManager);
+  }
+
+  public void configure(AuthorizationServerSecurityConfigurer authServer) {
+    authServer.tokenKeyAccess("permitAll()") // /oauth/token_key
+        .checkTokenAccess("isAuthenticated()"); // /oauth/check_token
   }
 }
