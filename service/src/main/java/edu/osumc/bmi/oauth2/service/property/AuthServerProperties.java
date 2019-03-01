@@ -5,6 +5,8 @@ public class AuthServerProperties {
   private String checkTokenEndpointUrl;
   private String clientId;
   private String clientSecret;
+  private String requestTokenUrl;
+  private String redirectUri;
 
   public String getCheckTokenEndpointUrl() {
     return checkTokenEndpointUrl;
@@ -28,5 +30,21 @@ public class AuthServerProperties {
 
   public void setClientSecret(String clientSecret) {
     this.clientSecret = clientSecret;
+  }
+
+  public void setRequestTokenUrl(String requestTokenUrl) {
+    this.requestTokenUrl = requestTokenUrl;
+  }
+
+  public String getRequestTokenUrl() {
+    return requestTokenUrl;
+  }
+
+  public void setRedirectUri(String redirectUri) {
+    this.redirectUri = redirectUri;
+  }
+
+  public String getRedirectUri() {
+    return redirectUri;
   }
 }

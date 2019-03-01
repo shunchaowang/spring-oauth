@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-
 import javax.sql.DataSource;
 
 @Configuration
@@ -38,6 +37,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   }
 
   public void configure(AuthorizationServerSecurityConfigurer authServer) {
+    // check_token and token_key are both denyAll by default,
+    // here to define the access level for them.
     authServer.tokenKeyAccess("permitAll()") // /oauth/token_key
         .checkTokenAccess("isAuthenticated()"); // /oauth/check_token
   }

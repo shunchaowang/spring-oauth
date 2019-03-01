@@ -1,0 +1,12 @@
+package edu.osumc.bmi.oauth2.service.property;
+
+public interface ServiceConstants {
+
+  final String oauth2GrantType = "grant_type";
+  final String oauth2AuthorizationCode = "authorization_code";
+  final String oauth2ClientId = "client_id";
+  final String oauth2Code = "code";
+  final String oauth2RedirectUri = "redirect_uri";
+  final String oauth2Scope = "scope";
+  final String oauth2All = "all";
+}

@@ -1,7 +1,6 @@
 package edu.osumc.bmi.oauth2.service;
 
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +22,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
   public RemoteTokenServices tokenServices() {
     RemoteTokenServices tokenServices = new RemoteTokenServices();
 
-    tokenServices.setCheckTokenEndpointUrl(serviceProperties.getAuthServer().getCheckTokenEndpointUrl());
+    tokenServices
+        .setCheckTokenEndpointUrl(serviceProperties.getAuthServer().getCheckTokenEndpointUrl());
     tokenServices.setClientId(serviceProperties.getAuthServer().getClientId());
     tokenServices.setClientSecret(serviceProperties.getAuthServer().getClientSecret());
 
