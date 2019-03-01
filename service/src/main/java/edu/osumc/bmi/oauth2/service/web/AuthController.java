@@ -19,7 +19,7 @@ import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-public class ServiceController {
+public class AuthController {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -34,7 +34,7 @@ public class ServiceController {
 
 
   @GetMapping("/callback")
-  public String authorizationCodeCallback(@RequestParam("code") String code) {
+  public ResponseEntity<String> authorizationCodeCallback(@RequestParam("code") String code) {
 
     logger.info("Authorization Server Code: " + code);
     // make a post to OAuth2 Authorization Server to get the tokens
@@ -49,8 +49,10 @@ public class ServiceController {
     ResponseEntity<String> response = restTemplate.exchange(
         properties.getAuthServer().getRequestTokenUrl(), HttpMethod.POST, request, String.class);
 
-    logger.info(response.getBody());
-    return "Login Successfully";
+    // request user info from oauth2 authorization server
+    // check if user exists in service, register the user if not, pull user roles if user has
+    // already registered.
+    return response;
   }
 
   private MultiValueMap<String, String> params(String code) {
