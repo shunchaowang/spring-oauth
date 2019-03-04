@@ -9,4 +9,7 @@ public interface ServiceConstants {
   final String oauth2RedirectUri = "redirect_uri";
   final String oauth2Scope = "scope";
   final String oauth2All = "all";
+  final String oauth2AccessToken = "access_token";
+  final String oauth2TokenType = "token_type";
+  final String oauth2RefreshToken = "refresh_token";
 }

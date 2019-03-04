@@ -7,6 +7,15 @@ public class AuthServerProperties {
   private String clientSecret;
   private String requestTokenUrl;
   private String redirectUri;
+  private String principalUrl;
+
+  public String getPrincipalUrl() {
+    return principalUrl;
+  }
+
+  public void setPrincipalUrl(String principalUrl) {
+    this.principalUrl = principalUrl;
+  }
 
   public String getCheckTokenEndpointUrl() {
     return checkTokenEndpointUrl;
