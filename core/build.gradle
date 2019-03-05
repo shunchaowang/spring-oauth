@@ -21,7 +21,7 @@ dependencies {
     implementation('org.apache.commons:commons-collections4:4.2')
     implementation('commons-beanutils:commons-beanutils:1.9.3')
 
-    runtime 'com.h2database:h2'
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    runtime 'com.h2database:h2'
 }
