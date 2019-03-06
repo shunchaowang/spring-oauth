@@ -1,22 +1,12 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+  id 'org.springframework.boot' version "2.1.2.RELEASE"
+  id 'java'
+  id 'war'
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'war'
 
 sourceCompatibility = '1.8'
-
-repositories {
-    maven { url 'https://repo.spring.io/milestone' }
-}
 
 dependencies {
     implementation project(":core")
@@ -42,9 +32,3 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
 }
-
-//dependencyManagement {
-//    imports {
-//        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-//    }
-//}
