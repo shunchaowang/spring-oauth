@@ -3,9 +3,9 @@ package edu.osumc.bmi.oauth2.core.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "bmi.oauth2")
-public class BMIOAuth2Properties {
+public class CoreProperties {
 
-  private PersistenceProperties persistence;
+  private PersistenceProperties persistence = new PersistenceProperties();
 
   public void setPersistence(PersistenceProperties persistence) {
     this.persistence = persistence;
