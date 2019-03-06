@@ -18,7 +18,9 @@ import javax.persistence.Version;
 @Table(name = "users")
 public class User implements Serializable {
 
-  @Id @GeneratedValue private long id;
+  @Id
+  @GeneratedValue
+  private long id;
 
   @Column(nullable = false, length = 64, unique = true)
   private String username;
@@ -29,19 +31,16 @@ public class User implements Serializable {
   @Column(nullable = false)
   private boolean active;
 
-  @Version private long version;
+  @Version
+  private long version;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "users_clients",
-      joinColumns = @JoinColumn(name = "user_id", nullable = false),
+  @JoinTable(name = "users_clients", joinColumns = @JoinColumn(name = "user_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "client_id", nullable = false))
   private Set<Client> clients;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "users_roles",
-      joinColumns = @JoinColumn(name = "user_id", nullable = false),
+  @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
   private Set<Role> roles;
 
@@ -117,7 +116,8 @@ public class User implements Serializable {
 
     private boolean active;
 
-    public UserBuilder() {}
+    public UserBuilder() {
+    }
 
     public UserBuilder username(String username) {
       this.username = username;

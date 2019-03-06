@@ -10,7 +10,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-
 import javax.sql.DataSource;
 
 @Configuration
@@ -18,16 +17,15 @@ import javax.sql.DataSource;
 @Profile("dev")
 public class DevDataSource implements AuthDataSource {
 
-  @Autowired private Environment env;
+  @Autowired
+  private Environment env;
 
   @Bean
   public DataSource dataSource() {
-    return DataSourceBuilder.create()
-        .driverClassName(env.getProperty(AuthConstants.DB_DRIVER_KEY))
+    return DataSourceBuilder.create().driverClassName(env.getProperty(AuthConstants.DB_DRIVER_KEY))
         .url(env.getProperty(AuthConstants.DB_URL_KEY))
         .username(env.getProperty(AuthConstants.DB_USERNAME_KEY))
-        .password(env.getProperty(AuthConstants.DB_PASSWORD_KEY))
-        .build();
+        .password(env.getProperty(AuthConstants.DB_PASSWORD_KEY)).build();
   }
 
   @Bean

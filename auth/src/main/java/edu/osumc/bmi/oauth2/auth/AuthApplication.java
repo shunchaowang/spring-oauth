@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import({CoreApplication.class})
+@Import(CoreApplication.class)
 public class AuthApplication {
 
   public static void main(String[] args) {

@@ -43,8 +43,8 @@ dependencies {
 
     compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
 
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
+    runtime 'com.h2database:h2'
+    runtime 'mysql:mysql-connector-java'
 }
 //
 //dependencyManagement {
