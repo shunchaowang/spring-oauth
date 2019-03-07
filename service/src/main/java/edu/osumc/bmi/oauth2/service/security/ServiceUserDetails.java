@@ -18,6 +18,10 @@ public class ServiceUserDetails implements UserDetails {
 
   private User user;
 
+  public ServiceUserDetails(User user) {
+    this.user = user;
+  }
+
   /**
    * Returns the authorities granted to the user. Cannot return <code>null</code>.
    *

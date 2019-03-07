@@ -27,6 +27,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     tokenServices.setClientId(serviceProperties.getAuthServer().getClientId());
     tokenServices.setClientSecret(serviceProperties.getAuthServer().getClientSecret());
 
+    // test
+
     return tokenServices;
   }
 
