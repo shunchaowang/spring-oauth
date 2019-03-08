@@ -3,8 +3,11 @@ package edu.osumc.bmi.oauth2.service.web;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.io.IOException;
@@ -23,6 +26,8 @@ import org.springframework.web.client.RestTemplate;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
 public class LoginController {
@@ -32,9 +37,13 @@ public class LoginController {
   @Autowired
   private ServiceProperties properties;
 
+  @Autowired
+  private RemoteTokenServices tokenServices;
+
   @GetMapping("/api/hello")
   @ResponseBody
   public String hello() {
+    SecurityContext context = SecurityContextHolder.getContext();
     return "hello world!";
   }
 
@@ -65,12 +74,11 @@ public class LoginController {
     }
 
     String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
-    String tokenType = (String) responseMap.get(ServiceConstants.oauth2TokenType);
-    // request user info from oauth2 authorization server
-    // check if user exists in service, register the user if not, pull user roles if user has
-    // already registered.
-    ResponseEntity<String> principalEntity = requestPrincipal(token, tokenType);
-    String principal = principalEntity.getBody();
+
+    OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
+    String principal = (String) authentication.getPrincipal(); // should be the username
+    // have to inject an Authentication to the Security Context
+
     return response;
   }
 

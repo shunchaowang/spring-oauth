@@ -1,0 +1,48 @@
+package edu.osumc.bmi.oauth2.auth;
+
+import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import edu.osumc.bmi.oauth2.auth.properties.AuthProperties;
+
+@Configuration
+@EnableConfigurationProperties(AuthProperties.class)
+public class TokenStoreConfig {
+
+  @Autowired
+  private DataSource dataSource;
+
+  @Bean
+  @ConditionalOnProperty(prefix = "bmi.oauth2.token", name = "storeType", havingValue = "jdbc")
+  public TokenStore tokenStore() {
+    return new JdbcTokenStore(dataSource);
+  }
+
+  @Configuration
+  public static class JwtTokenConfig {
+
+    @Autowired
+    private AuthProperties properties;
+
+    @Bean
+    @ConditionalOnProperty(prefix = "bmi.oauth2.token", name = "storeType", havingValue = "jwt",
+        matchIfMissing = true)
+    public TokenStore jwtTokenStore() {
+      return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+      JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+      converter.setSigningKey(properties.getToken().getJwtSigningKey());
+      return converter;
+    }
+  }
+}

@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import edu.osumc.bmi.oauth2.auth.user.AuthUserDetailsService;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import javax.sql.DataSource;
 
@@ -17,10 +19,19 @@ import javax.sql.DataSource;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
   @Autowired
+  private AuthUserDetailsService userDetailsService;
+
+  @Autowired
   private AuthenticationManager authenticationManager;
 
   @Autowired
   private DataSource dataSource;
+
+  @Autowired
+  private TokenStore tokenStore;
+
+  @Autowired(required = false)
+  private JwtAccessTokenConverter jwtAccessTokenConverter;
 
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -31,7 +42,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
     // AuthenticationManager is needed for password grant type
-    endpoints.tokenStore(tokenStore()).authenticationManager(authenticationManager);
+    endpoints.tokenStore(tokenStore).authenticationManager(authenticationManager)
+    /* .userDetailsService(userDetailsService) */;
+
+    if (jwtAccessTokenConverter != null) {
+      endpoints.accessTokenConverter(jwtAccessTokenConverter);
+    }
   }
 
   public void configure(AuthorizationServerSecurityConfigurer authServer) {
@@ -39,9 +55,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     // here to define the access level for them.
     authServer.tokenKeyAccess("permitAll()") // /oauth/token_key
         .checkTokenAccess("isAuthenticated()"); // /oauth/check_token
-  }
-
-  private TokenStore tokenStore() {
-    return new JdbcTokenStore(dataSource);
   }
 }
