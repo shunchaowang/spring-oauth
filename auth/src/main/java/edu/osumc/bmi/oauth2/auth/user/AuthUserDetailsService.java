@@ -53,7 +53,6 @@ public class AuthUserDetailsService implements UserDetailsService {
     String usernameParam = request.getParameter("username");
     System.out.println("username in params: " + usernameParam);
     User user = userService.get(username);
-    logger.info("" + user.getId());
     return new AuthUserDetails(user);
   }
 }
