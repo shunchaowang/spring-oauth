@@ -20,9 +20,9 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
   private AuthUserDetailsService userDetailsService;
 
   /**
-   * Override this method to configure the {@link HttpSecurity}. Typically
-   * subclasses should not invoke this method by calling super as it may override
-   * their configuration. The default configuration is:
+   * Override this method to configure the {@link HttpSecurity}. Typically subclasses should not
+   * invoke this method by calling super as it may override their configuration. The default
+   * configuration is:
    *
    * <pre>
    * http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
@@ -33,28 +33,26 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests().antMatchers("/login").permitAll().anyRequest().authenticated().and().formLogin();
+    http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login")
+        .loginProcessingUrl("/login").permitAll();
   }
 
   /**
-   * Used by the default implementation of {@link #authenticationManager()} to
-   * attempt to obtain an {@link AuthenticationManager}. If overridden, the
-   * {@link AuthenticationManagerBuilder} should be used to specify the
-   * {@link AuthenticationManager}.
+   * Used by the default implementation of {@link #authenticationManager()} to attempt to obtain an
+   * {@link AuthenticationManager}. If overridden, the {@link AuthenticationManagerBuilder} should
+   * be used to specify the {@link AuthenticationManager}.
    *
    * <p>
-   * The {@link #authenticationManagerBean()} method can be used to expose the
-   * resulting {@link AuthenticationManager} as a Bean. The
-   * {@link #userDetailsServiceBean()} can be used to expose the last populated
-   * {@link UserDetailsService} that is created with the
-   * {@link AuthenticationManagerBuilder} as a Bean. The
-   * {@link UserDetailsService} will also automatically be populated on
-   * {@link HttpSecurity#getSharedObject(Class)} for use with other
+   * The {@link #authenticationManagerBean()} method can be used to expose the resulting
+   * {@link AuthenticationManager} as a Bean. The {@link #userDetailsServiceBean()} can be used to
+   * expose the last populated {@link UserDetailsService} that is created with the
+   * {@link AuthenticationManagerBuilder} as a Bean. The {@link UserDetailsService} will also
+   * automatically be populated on {@link HttpSecurity#getSharedObject(Class)} for use with other
    * {@link SecurityContextConfigurer} (i.e. RememberMeConfigurer )
    *
    * <p>
-   * For example, the following configuration could be used to register in memory
-   * authentication that exposes an in memory {@link UserDetailsService}:
+   * For example, the following configuration could be used to register in memory authentication
+   * that exposes an in memory {@link UserDetailsService}:
    *
    * <pre>
    * &#064;Override
@@ -62,8 +60,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    *   auth
    *       // enable in memory based authentication with a user named
    *       // &quot;user&quot; and &quot;admin&quot;
-   *       .inMemoryAuthentication().withUser(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;).and().withUser(&quot;admin&quot;)
-   *       .password(&quot;password&quot;).roles(&quot;USER&quot;, &quot;ADMIN&quot;);
+   *       .inMemoryAuthentication().withUser(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;).and()
+   *       .withUser(&quot;admin&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;, &quot;ADMIN&quot;);
    * }
    *
    * // Expose the UserDetailsService as a Bean
@@ -85,8 +83,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
   /**
    * Override this method to expose the {@link AuthenticationManager} from
-   * {@link #configure(AuthenticationManagerBuilder)} to be exposed as a Bean. For
-   * example:
+   * {@link #configure(AuthenticationManagerBuilder)} to be exposed as a Bean. For example:
    *
    * <pre>
    * &#064;Bean(name name="myAuthenticationManager")

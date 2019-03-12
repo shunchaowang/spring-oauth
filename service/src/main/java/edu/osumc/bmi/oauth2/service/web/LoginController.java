@@ -26,7 +26,8 @@ import org.springframework.web.client.RestTemplate;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
@@ -42,8 +43,9 @@ public class LoginController {
 
   @GetMapping("/api/hello")
   @ResponseBody
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   public String hello() {
-    SecurityContext context = SecurityContextHolder.getContext();
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return "hello world!";
   }
 

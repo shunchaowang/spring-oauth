@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import edu.osumc.bmi.oauth2.auth.client.AuthClientDetailsService;
 import edu.osumc.bmi.oauth2.auth.user.AuthUserDetailsService;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import javax.sql.DataSource;
@@ -19,7 +20,7 @@ import javax.sql.DataSource;
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
   @Autowired
-  private AuthUserDetailsService userDetailsService;
+  private AuthClientDetailsService clientDetailsService;
 
   @Autowired
   private AuthenticationManager authenticationManager;
@@ -36,14 +37,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
     clients.jdbc(dataSource);
+    // clients.withClientDetails(clientDetailsService);
   }
 
   @Override
   public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
     // AuthenticationManager is needed for password grant type
-    endpoints.tokenStore(tokenStore).authenticationManager(authenticationManager)
-    /* .userDetailsService(userDetailsService) */;
+    endpoints.tokenStore(tokenStore).authenticationManager(authenticationManager);
 
     if (jwtAccessTokenConverter != null) {
       endpoints.accessTokenConverter(jwtAccessTokenConverter);
