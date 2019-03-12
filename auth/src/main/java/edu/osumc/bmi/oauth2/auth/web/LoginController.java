@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
 
 @Controller
 public class LoginController {
@@ -58,26 +60,41 @@ public class LoginController {
       return null;
     }
 
-    System.out.println(savedRequest.getRedirectUrl());
-
     Map<String, String[]> map0 = savedRequest.getParameterMap();
-    String clientId = map0.get("client_id")[0];
+    String clientId = map0.get(AuthConstants.CLIENT_ID_PARAM_NAME)[0];
     ModelAndView mv = new ModelAndView("login");
-    mv.addObject("client_id", clientId);
+    mv.addObject(AuthConstants.CLIENT_ID_PARAM_NAME, clientId);
     return mv;
   }
 
   @PostMapping("/login")
   public String performLogin(HttpServletRequest request, HttpServletResponse response) {
 
+    SavedRequest savedRequest = (new HttpSessionRequestCache().getRequest(request, response));
+    if (savedRequest == null) {
+      // todo: error handling
+      return null;
+    }
+
+    if (StringUtils
+        .isEmpty(savedRequest.getParameterValues(AuthConstants.CLIENT_ID_PARAM_NAME)[0])) {
+      // todo: error handling
+      return null;
+    }
+
+    // check if client_id is matching
+    if (!request.getParameter(AuthConstants.CLIENT_ID_PARAM_NAME)
+        .equals(savedRequest.getParameterValues(AuthConstants.CLIENT_ID_PARAM_NAME)[0])) {
+      // todo: error handling
+      return null;
+    }
     try {
       request.login(request.getParameter("username"), request.getParameter("password"));
-      SavedRequest savedRequest = (new HttpSessionRequestCache().getRequest(request, response));
-      return "redirect:" + savedRequest.getRedirectUrl();
+
     } catch (ServletException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    return "";
+    return "redirect:" + savedRequest.getRedirectUrl();
   }
 }

@@ -6,4 +6,6 @@ public interface AuthConstants {
   String DB_URL_KEY = "url";
   String DB_USERNAME_KEY = "username";
   String DB_PASSWORD_KEY = "password";
+
+  String CLIENT_ID_PARAM_NAME = "client_id";
 }

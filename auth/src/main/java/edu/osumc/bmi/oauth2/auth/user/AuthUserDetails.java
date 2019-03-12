@@ -1,5 +1,6 @@
 package edu.osumc.bmi.oauth2.auth.user;
 
+import edu.osumc.bmi.oauth2.core.domain.Client;
 import edu.osumc.bmi.oauth2.core.domain.Role;
 import edu.osumc.bmi.oauth2.core.domain.User;
 import java.util.ArrayList;
@@ -17,10 +18,12 @@ public class AuthUserDetails implements UserDetails {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private User user;
+  private Client client;
 
-  public AuthUserDetails(User user) {
+  public AuthUserDetails(User user, Client client) {
     logger.info("" + user.getId());
     this.user = user;
+    this.client = client;
   }
 
   /**
@@ -33,7 +36,11 @@ public class AuthUserDetails implements UserDetails {
     Collection<GrantedAuthority> authorities = new ArrayList<>();
     for (Role role : user.getRoles()) {
       SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-      authorities.add(authority);
+      // we only want to return the user with the role belonged to this specific
+      // this authorities can be empty if the user has not been approved for the registration
+      if (client.getRoles().contains(role)) {
+        authorities.add(authority);
+      }
     }
     return authorities;
   }

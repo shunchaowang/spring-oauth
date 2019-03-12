@@ -1,21 +1,17 @@
 package edu.osumc.bmi.oauth2.auth.user;
 
+import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
+import edu.osumc.bmi.oauth2.core.domain.Client;
 import edu.osumc.bmi.oauth2.core.domain.User;
+import edu.osumc.bmi.oauth2.core.service.ClientService;
 import edu.osumc.bmi.oauth2.core.service.UserService;
-import java.util.Collections;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -27,6 +23,9 @@ public class AuthUserDetailsService implements UserDetailsService {
 
   @Autowired
   private UserService userService;
+
+  @Autowired
+  private ClientService clientService;
 
   /**
    * Locates the user based on the username. In the actual implementation, the search may possibly
@@ -45,14 +44,15 @@ public class AuthUserDetailsService implements UserDetailsService {
     logger.info(username);
     HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    List<String> requestParams = Collections.list(request.getAttributeNames());
-    System.out.println("Params in request:");
-    requestParams.stream().forEach(System.out::println);
-    String clientIdParam = request.getParameter("client_id");
-    System.out.println("client_id in params: " + clientIdParam);
-    String usernameParam = request.getParameter("username");
-    System.out.println("username in params: " + usernameParam);
+    // List<String> requestParams = Collections.list(request.getAttributeNames());
+    String clientId = request.getParameter(AuthConstants.CLIENT_ID_PARAM_NAME);
     User user = userService.get(username);
-    return new AuthUserDetails(user);
+    Client client = clientService.findByOauth2ClientId(clientId);
+    if (!user.getClients().contains(client)) {
+      // if user has not registered to the client yet, register automatically
+      user.getClients().add(client);
+      userService.update(user);
+    }
+    return new AuthUserDetails(user, client);
   }
 }
