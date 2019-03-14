@@ -6,11 +6,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.hibernate5.SpringSessionContext;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,11 +26,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import edu.osumc.bmi.oauth2.service.aspect.Timed;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
@@ -51,6 +58,7 @@ public class LoginController {
 
 
   @GetMapping("/login/callback")
+  // @Timed
   public ResponseEntity<String> authorizationCodeCallback(@RequestParam("code") String code) {
 
     logger.info("Authorization Server Code: " + code);
@@ -78,8 +86,15 @@ public class LoginController {
     String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
 
     OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
+
     String principal = (String) authentication.getPrincipal(); // should be the username
+    logger.info("username {}", principal);
     // have to inject an Authentication to the Security Context
+    // OAuth2Authentication is constructed by an OAuth2Request and a
+    // UsernamePasswordAuthenticationToken,
+    // to inject a new Authentication into the security context, we have to create a new
+    // UsernamePasswordAuthenticationToken,
+    // for authorities of the authentication is immutable.
 
     return response;
   }

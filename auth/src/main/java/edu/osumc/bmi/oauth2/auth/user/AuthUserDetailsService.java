@@ -44,15 +44,13 @@ public class AuthUserDetailsService implements UserDetailsService {
     logger.info(username);
     HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    // List<String> requestParams = Collections.list(request.getAttributeNames());
-    String clientId = request.getParameter(AuthConstants.CLIENT_ID_PARAM_NAME);
+    // String clientId = request.getParameter(AuthConstants.CLIENT_ID_PARAM_NAME);
     User user = userService.get(username);
-    Client client = clientService.findByOauth2ClientId(clientId);
-    if (!user.getClients().contains(client)) {
-      // if user has not registered to the client yet, register automatically
-      user.getClients().add(client);
-      userService.update(user);
-    }
-    return new AuthUserDetails(user, client);
+    // if (!user.getClients().contains(client)) {
+    // // if user has not registered to the client yet, register automatically
+    // user.getClients().add(client);
+    // userService.update(user);
+    // }
+    return new AuthUserDetails(user);
   }
 }

@@ -18,12 +18,10 @@ public class AuthUserDetails implements UserDetails {
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private User user;
-  private Client client;
 
-  public AuthUserDetails(User user, Client client) {
+  public AuthUserDetails(User user) {
     logger.info("" + user.getId());
     this.user = user;
-    this.client = client;
   }
 
   /**
@@ -34,13 +32,10 @@ public class AuthUserDetails implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     Collection<GrantedAuthority> authorities = new ArrayList<>();
+
     for (Role role : user.getRoles()) {
       SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-      // we only want to return the user with the role belonged to this specific
-      // this authorities can be empty if the user has not been approved for the registration
-      if (client.getRoles().contains(role)) {
-        authorities.add(authority);
-      }
+      authorities.add(authority);
     }
     return authorities;
   }

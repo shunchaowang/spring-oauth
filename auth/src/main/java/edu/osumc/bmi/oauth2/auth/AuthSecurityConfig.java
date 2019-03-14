@@ -33,8 +33,10 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login")
-        .loginProcessingUrl("/login").permitAll();
+    // if want to use custom login page for login
+    // http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login")
+    // .loginProcessingUrl("/login").permitAll();
+    http.authorizeRequests().anyRequest().authenticated().and().formLogin();
   }
 
   /**
