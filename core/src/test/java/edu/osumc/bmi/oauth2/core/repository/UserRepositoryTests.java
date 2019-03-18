@@ -32,5 +32,4 @@ public class UserRepositoryTests {
 
     assertThat(found.getUsername().equals("tom"));
   }
-
 }

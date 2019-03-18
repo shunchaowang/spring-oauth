@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
     Role role = roleRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID);
     Client client = clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID);
 
-    user.getClients().add(client);
+    // user.getClients().add(client);
+    // todo: create user client association
     user.getRoles().add(role);
     return userRepository.save(user);
   }

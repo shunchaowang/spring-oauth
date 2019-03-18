@@ -3,6 +3,7 @@ package edu.osumc.bmi.oauth2.core.domain;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -34,10 +36,15 @@ public class User implements Serializable {
   @Version
   private long version;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "users_clients", joinColumns = @JoinColumn(name = "user_id", nullable = false),
-      inverseJoinColumns = @JoinColumn(name = "client_id", nullable = false))
-  private Set<Client> clients;
+  // @ManyToMany(fetch = FetchType.EAGER)
+  // @JoinTable(name = "users_clients", joinColumns = @JoinColumn(name = "user_id", nullable =
+  // false),
+  // inverseJoinColumns = @JoinColumn(name = "client_id", nullable = false))
+  // private Set<Client> clients;
+
+  // many to many association with extra columns
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<UserClient> userClients;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", nullable = false),
@@ -46,7 +53,8 @@ public class User implements Serializable {
 
   public User() {
 
-    clients = new HashSet<>();
+    // clients = new HashSet<>();
+    userClients = new HashSet<>();
     roles = new HashSet<>();
   }
 
@@ -90,12 +98,16 @@ public class User implements Serializable {
     this.version = version;
   }
 
-  public Set<Client> getClients() {
-    return clients;
-  }
+  // public Set<Client> getClients() {
+  // return clients;
+  // }
 
-  public void setClients(Set<Client> clients) {
-    this.clients = clients;
+  // public void setClients(Set<Client> clients) {
+  // this.clients = clients;
+  // }
+
+  public boolean getActive() {
+    return this.active;
   }
 
   public Set<Role> getRoles() {

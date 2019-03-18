@@ -3,7 +3,9 @@ package edu.osumc.bmi.oauth2.core.domain;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +21,9 @@ import javax.persistence.Version;
 @Table(name = "clients")
 public class Client implements Serializable {
 
-  @Id @GeneratedValue private long id;
+  @Id
+  @GeneratedValue
+  private long id;
 
   @Column(nullable = false)
   private String name;
@@ -30,22 +34,25 @@ public class Client implements Serializable {
   @Column(nullable = false)
   private boolean active;
 
-  @Version private long version;
+  @Version
+  private long version;
 
   @OneToMany(mappedBy = "client")
   private Set<Role> roles;
 
-  @ManyToMany
-  @JoinTable(
-      name = "users_clients",
-      joinColumns = @JoinColumn(name = "client_id", nullable = false),
-      inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false))
-  private Set<User> users;
+  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+  private Set<UserClient> userClients;
 
   public Client() {
 
     roles = new HashSet<>();
-    users = new HashSet<>();
+    userClients = new HashSet<>();
+  }
+
+  public Client(User user) {
+    userClients = new HashSet<>();
+    UserClient userClient = new UserClient(user, this, true);
+    userClients.add(userClient);
   }
 
   public long getId() {
@@ -96,21 +103,73 @@ public class Client implements Serializable {
     this.roles = roles;
   }
 
+  public boolean getActive() {
+    return this.active;
+  }
+
+
+  public Set<UserClient> getUserClients() {
+    return this.userClients;
+  }
+
+  public void setUserClients(Set<UserClient> userClients) {
+    this.userClients = userClients;
+  }
+
+  /**
+   * Get the owner of the client.
+   * @return
+   */
+  public User getOwner() {
+    UserClient userClient = userClients.stream().filter(u -> u.isOwner()).findFirst().orElse(null);
+    return userClient == null ? null : userClient.getUser();
+  }
+
+  /**
+   * Get all users of the client except the owner.
+   * @return
+   */
   public Set<User> getUsers() {
+    if (userClients.size() <= 1) return null;
+    Set<User> users = new HashSet<>();
+
+    userClients.forEach(userClient -> {
+      if (!userClient.isOwner()) {
+        users.add(userClient.getUser());
+      }
+    });
+
     return users;
   }
 
-  public void setUsers(Set<User> users) {
-    this.users = users;
+  /**
+   * Add a user to the client, the user cannot be the owner.
+   * @param user
+   */
+  public void addUser(User user) {
+    if (userClients == null) userClients = new HashSet<>();
+    UserClient userClient = new UserClient(user, this);
+    userClients.add(userClient);
+  }
+
+  /**
+   * Remove a user from the client, the user cannot be the owner.
+   * @param user
+   */
+  public void removeUser(User user) {
+    UserClient userClient = new UserClient(user, this);
+    if (!userClients.contains(userClient)) return;
+    userClients.remove(userClient);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
     Client client = (Client) o;
-    return id == client.id
-        && name.equals(client.name)
+    return id == client.id && name.equals(client.name)
         && oauth2ClientId.equals(client.oauth2ClientId);
   }
 
