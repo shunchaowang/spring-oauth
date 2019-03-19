@@ -1,8 +1,13 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,12 +41,6 @@ public class User implements Serializable {
   @Version
   private long version;
 
-  // @ManyToMany(fetch = FetchType.EAGER)
-  // @JoinTable(name = "users_clients", joinColumns = @JoinColumn(name = "user_id", nullable =
-  // false),
-  // inverseJoinColumns = @JoinColumn(name = "client_id", nullable = false))
-  // private Set<Client> clients;
-
   // many to many association with extra columns
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private Set<UserClient> userClients;
@@ -53,7 +52,6 @@ public class User implements Serializable {
 
   public User() {
 
-    // clients = new HashSet<>();
     userClients = new HashSet<>();
     roles = new HashSet<>();
   }
@@ -98,14 +96,6 @@ public class User implements Serializable {
     this.version = version;
   }
 
-  // public Set<Client> getClients() {
-  // return clients;
-  // }
-
-  // public void setClients(Set<Client> clients) {
-  // this.clients = clients;
-  // }
-
   public boolean getActive() {
     return this.active;
   }
@@ -116,6 +106,16 @@ public class User implements Serializable {
 
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
+  }
+
+  public Set<Client> getClientOwned() {
+    return userClients.stream().filter(UserClient::isOwner)
+            .map(UserClient::getClient).collect(Collectors.toSet());
+  }
+
+  public Set<Client> getClientRegistered() {
+    return userClients.stream().filter(userClient -> !userClient.isOwner())
+            .map(UserClient::getClient).collect(Collectors.toSet());
   }
 
   public static UserBuilder builder = new UserBuilder();

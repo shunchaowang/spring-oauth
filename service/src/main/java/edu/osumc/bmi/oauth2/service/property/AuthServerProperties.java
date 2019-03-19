@@ -7,15 +7,8 @@ public class AuthServerProperties {
   private String clientSecret;
   private String requestTokenUrl;
   private String redirectUri;
-  private String principalUrl;
-
-  public String getPrincipalUrl() {
-    return principalUrl;
-  }
-
-  public void setPrincipalUrl(String principalUrl) {
-    this.principalUrl = principalUrl;
-  }
+  private String storeType;
+  private String jwtSigningKey = "123456";
 
   public String getCheckTokenEndpointUrl() {
     return checkTokenEndpointUrl;
@@ -55,5 +48,21 @@ public class AuthServerProperties {
 
   public String getRedirectUri() {
     return redirectUri;
+  }
+
+  public String getStoreType() {
+    return storeType;
+  }
+
+  public void setStoreType(String storeType) {
+    this.storeType = storeType;
+  }
+
+  public String getJwtSigningKey() {
+    return jwtSigningKey;
+  }
+
+  public void setJwtSigningKey(String jwtSigningKey) {
+    this.jwtSigningKey = jwtSigningKey;
   }
 }

@@ -3,17 +3,13 @@ package edu.osumc.bmi.oauth2.service.web;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.hibernate5.SpringSessionContext;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,15 +22,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import edu.osumc.bmi.oauth2.service.aspect.Timed;
+import edu.osumc.bmi.oauth2.core.aspect.Timed;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @RestController
@@ -58,7 +51,7 @@ public class LoginController {
 
 
   @GetMapping("/login/callback")
-  // @Timed
+  @Timed
   public ResponseEntity<String> authorizationCodeCallback(@RequestParam("code") String code) {
 
     logger.info("Authorization Server Code: " + code);
@@ -86,6 +79,7 @@ public class LoginController {
     String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
 
     OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
+    logger.info("OAuth2Authentication {}", authentication);
 
     String principal = (String) authentication.getPrincipal(); // should be the username
     logger.info("username {}", principal);
@@ -104,8 +98,7 @@ public class LoginController {
     MultiValueMap<String, String> params = oauthCodeParams(code);
     HttpHeaders headers = basicAuthHeaders(properties.getAuthServer().getClientId(),
         properties.getAuthServer().getClientSecret());
-    HttpEntity<MultiValueMap<String, String>> request =
-        new HttpEntity<MultiValueMap<String, String>>(params, headers);
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
     logger.debug("Http Header Basic Authorization base64 encoded: "
         + request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
 
@@ -114,13 +107,14 @@ public class LoginController {
         request, String.class);
   }
 
+  //todo: tbd
   private ResponseEntity<String> requestPrincipal(String token, String tokenType) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.AUTHORIZATION, tokenType + " " + token);
     HttpEntity<?> request = new HttpEntity<>(headers);
     RestTemplate restTemplate = new RestTemplate();
-    return restTemplate.exchange(properties.getAuthServer().getPrincipalUrl(), HttpMethod.GET,
+    return restTemplate.exchange("http://localhost:8080/me", HttpMethod.GET,
         request, String.class);
   }
 

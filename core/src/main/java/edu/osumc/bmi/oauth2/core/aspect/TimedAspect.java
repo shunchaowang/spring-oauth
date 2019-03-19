@@ -1,4 +1,4 @@
-package edu.osumc.bmi.oauth2.service.aspect;
+package edu.osumc.bmi.oauth2.core.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -13,13 +13,13 @@ public class TimedAspect {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Around("@annotation(edu.osumc.bmi.oauth2.service.aspect.Timed) && execution(public * *(..))")
-  public void time(final ProceedingJoinPoint joinPoint) throws Throwable {
+  @Around("@annotation(edu.osumc.bmi.oauth2.core.aspect.Timed) && execution(public * *(..))")
+  public Object time(final ProceedingJoinPoint joinPoint) throws Throwable {
 
     long start = System.currentTimeMillis();
 
     try {
-      joinPoint.proceed();
+      return joinPoint.proceed();
     } catch (Throwable throwable) {
       throw throwable;
     } finally {

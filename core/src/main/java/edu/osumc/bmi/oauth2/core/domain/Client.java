@@ -3,16 +3,13 @@ package edu.osumc.bmi.oauth2.core.domain;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -49,9 +46,9 @@ public class Client implements Serializable {
     userClients = new HashSet<>();
   }
 
-  public Client(User user) {
+  public Client(User owner) {
     userClients = new HashSet<>();
-    UserClient userClient = new UserClient(user, this, true);
+    UserClient userClient = new UserClient(owner, this, true);
     userClients.add(userClient);
   }
 
@@ -107,39 +104,22 @@ public class Client implements Serializable {
     return this.active;
   }
 
-
-  public Set<UserClient> getUserClients() {
-    return this.userClients;
-  }
-
-  public void setUserClients(Set<UserClient> userClients) {
-    this.userClients = userClients;
-  }
-
   /**
    * Get the owner of the client.
-   * @return
+   * @return the owner of the client, should be only one.
    */
   public User getOwner() {
-    UserClient userClient = userClients.stream().filter(u -> u.isOwner()).findFirst().orElse(null);
+    UserClient userClient = userClients.stream().filter(UserClient::isOwner).findFirst().orElse(null);
     return userClient == null ? null : userClient.getUser();
   }
 
   /**
    * Get all users of the client except the owner.
-   * @return
+   * @return all users registered on the client except the owner, null if no one has registered.
    */
   public Set<User> getUsers() {
-    if (userClients.size() <= 1) return null;
-    Set<User> users = new HashSet<>();
-
-    userClients.forEach(userClient -> {
-      if (!userClient.isOwner()) {
-        users.add(userClient.getUser());
-      }
-    });
-
-    return users;
+    return userClients.stream().filter(UserClient::isOwner)
+            .map(UserClient::getUser).collect(Collectors.toSet());
   }
 
   /**
@@ -154,7 +134,7 @@ public class Client implements Serializable {
 
   /**
    * Remove a user from the client, the user cannot be the owner.
-   * @param user
+   * @param user to removed, cannot be the owner
    */
   public void removeUser(User user) {
     UserClient userClient = new UserClient(user, this);

@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -14,6 +16,9 @@ import edu.osumc.bmi.oauth2.auth.client.AuthClientDetailsService;
 import edu.osumc.bmi.oauth2.auth.user.AuthUserDetailsService;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableAuthorizationServer
@@ -34,6 +39,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   @Autowired(required = false)
   private JwtAccessTokenConverter jwtAccessTokenConverter;
 
+  @Autowired(required = false)
+  private TokenEnhancer jwtTokenEnhancer;
+
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
     clients.jdbc(dataSource);
@@ -47,7 +55,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     endpoints.tokenStore(tokenStore).authenticationManager(authenticationManager);
 
     if (jwtAccessTokenConverter != null) {
-      endpoints.accessTokenConverter(jwtAccessTokenConverter);
+      TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+      List<TokenEnhancer> tokenEnhancers = new ArrayList<>();
+      // order is important, enhancer must come before jtw converter to make sure access token contains the
+      // additional info.
+      if (jwtTokenEnhancer != null) {
+        tokenEnhancers.add(jwtTokenEnhancer);
+      }
+      tokenEnhancers.add(jwtAccessTokenConverter);
+      tokenEnhancerChain.setTokenEnhancers(tokenEnhancers);
+      endpoints.tokenEnhancer(tokenEnhancerChain);
     }
   }
 

@@ -1,11 +1,13 @@
-package edu.osumc.bmi.oauth2.auth;
+package edu.osumc.bmi.oauth2.auth.token;
 
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -14,7 +16,7 @@ import edu.osumc.bmi.oauth2.auth.properties.AuthProperties;
 
 @Configuration
 @EnableConfigurationProperties(AuthProperties.class)
-public class TokenStoreConfig {
+public class TokenConfig {
 
   @Autowired
   private DataSource dataSource;
@@ -43,6 +45,12 @@ public class TokenStoreConfig {
       JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
       converter.setSigningKey(properties.getToken().getJwtSigningKey());
       return converter;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(name = "jwtTokenEnhancer")
+    public TokenEnhancer jwtTokenEnhancer() {
+      return new JwtTokenEnhancer();
     }
   }
 }
