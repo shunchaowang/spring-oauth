@@ -1,11 +1,12 @@
 package edu.osumc.bmi.oauth2.auth.client;
 
+import edu.osumc.bmi.oauth2.core.domain.Client;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.provider.ClientDetails;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.provider.ClientDetails;
-import edu.osumc.bmi.oauth2.core.domain.Client;
 
 public class AuthClientDetails implements ClientDetails {
 
@@ -79,5 +80,4 @@ public class AuthClientDetails implements ClientDetails {
   public Map<String, Object> getAdditionalInformation() {
     return null;
   }
-
 }

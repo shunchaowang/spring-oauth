@@ -16,56 +16,50 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class ClientRepositoryTests {
 
-    @Autowired
-    private ClientRepository clientRepository;
+  @Autowired private ClientRepository clientRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Test
-    public void testFindByOauth2ClientId() {
-        // given
-        Client client = new Client();
-        client.setActive(true);
-        client.setName("test-client");
-        client.setOauth2ClientId("test-oauth2-client");
-        clientRepository.save(client);
-        // when
-        Client found = clientRepository.findByOauth2ClientId("test-oauth2-client");
-        // then
-        assertThat(found.getOauth2ClientId().equals("test-oauth2-client"));
+  @Test
+  public void testFindByOauth2ClientId() {
+    // given
+    Client client = new Client();
+    client.setActive(true);
+    client.setName("test-client");
+    client.setOauth2ClientId("test-oauth2-client");
+    clientRepository.save(client);
+    // when
+    Client found = clientRepository.findByOauth2ClientId("test-oauth2-client");
+    // then
+    assertThat(found.getOauth2ClientId().equals("test-oauth2-client"));
 
-        found.setName("test-client-edit");
-        clientRepository.save(found);
-        found = clientRepository.findById(found.getId()).get();
-        assertThat(found.getOauth2ClientId().equals("test-oauth2-client"));
-    }
+    found.setName("test-client-edit");
+    clientRepository.save(found);
+    found = clientRepository.findById(found.getId()).get();
+    assertThat(found.getOauth2ClientId().equals("test-oauth2-client"));
+  }
 
+  @Test
+  public void testUserAddClient() {
 
-    @Test
-    public void testUserAddClient() {
+    User.UserBuilder userBuilder = new User.UserBuilder();
+    User user = userBuilder.username("tom").password("tom").active(true).build();
 
-        User.UserBuilder userBuilder = new User.UserBuilder();
-        User user = userBuilder.username("tom")
-                .password("tom")
-                .active(true)
-                .build();
+    user = userRepository.save(user);
+    User userCreated = userRepository.getOne(user.getId());
 
-        user = userRepository.save(user);
-        User userCreated = userRepository.getOne(user.getId());
+    AssertionsForClassTypes.assertThat(userCreated.getUsername().equals("tom"));
 
-        AssertionsForClassTypes.assertThat(userCreated.getUsername().equals("tom"));
-
-        // given
-        Client client = new Client(userCreated);
-        client.setActive(true);
-        client.setName("test-client");
-        client.setOauth2ClientId("test-oauth2-client");
-        clientRepository.save(client);
-        // when
-        Client clientCreated = clientRepository.findByOauth2ClientId("test-oauth2-client");
-        // then
-        Assertions.assertThat(clientCreated.getOauth2ClientId().equals("test-oauth2-client"));
-        Assertions.assertThat(clientCreated.getOwner().getId() == userCreated.getId());
-    }
+    // given
+    Client client = new Client(userCreated);
+    client.setActive(true);
+    client.setName("test-client");
+    client.setOauth2ClientId("test-oauth2-client");
+    clientRepository.save(client);
+    // when
+    Client clientCreated = clientRepository.findByOauth2ClientId("test-oauth2-client");
+    // then
+    Assertions.assertThat(clientCreated.getOauth2ClientId().equals("test-oauth2-client"));
+    Assertions.assertThat(clientCreated.getOwner().getId() == userCreated.getId());
+  }
 }

@@ -34,20 +34,20 @@ public class AuthServerProperties {
     this.clientSecret = clientSecret;
   }
 
-  public void setRequestTokenUrl(String requestTokenUrl) {
-    this.requestTokenUrl = requestTokenUrl;
-  }
-
   public String getRequestTokenUrl() {
     return requestTokenUrl;
   }
 
-  public void setRedirectUri(String redirectUri) {
-    this.redirectUri = redirectUri;
+  public void setRequestTokenUrl(String requestTokenUrl) {
+    this.requestTokenUrl = requestTokenUrl;
   }
 
   public String getRedirectUri() {
     return redirectUri;
+  }
+
+  public void setRedirectUri(String redirectUri) {
+    this.redirectUri = redirectUri;
   }
 
   public String getJwtSigningKey() {

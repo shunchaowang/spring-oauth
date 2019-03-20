@@ -1,13 +1,8 @@
 package edu.osumc.bmi.oauth2.auth.web;
 
-import java.security.Principal;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Controller
 public class LoginController {
@@ -44,16 +45,17 @@ public class LoginController {
 
   /**
    * The Api to be called by resource servers to retrieve user's info
+   *
    * @param principal
    * @return
    */
-   @GetMapping("/user/me")
-   public Map<String, String> user(Principal principal) {
-   Map<String, String> map = new LinkedHashMap<>();
-   logger.info("Principal name: " + principal.getName());
-   map.put("name", principal.getName());
-   return map;
-   }
+  @GetMapping("/user/me")
+  public Map<String, String> user(Principal principal) {
+    Map<String, String> map = new LinkedHashMap<>();
+    logger.info("Principal name: " + principal.getName());
+    map.put("name", principal.getName());
+    return map;
+  }
 
   @GetMapping("/login")
   public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
@@ -80,14 +82,15 @@ public class LoginController {
       return null;
     }
 
-    if (StringUtils
-        .isEmpty(savedRequest.getParameterValues(AuthConstants.CLIENT_ID_PARAM_NAME)[0])) {
+    if (StringUtils.isEmpty(
+        savedRequest.getParameterValues(AuthConstants.CLIENT_ID_PARAM_NAME)[0])) {
       // todo: error handling
       return null;
     }
 
     // check if client_id is matching
-    if (!request.getParameter(AuthConstants.CLIENT_ID_PARAM_NAME)
+    if (!request
+        .getParameter(AuthConstants.CLIENT_ID_PARAM_NAME)
         .equals(savedRequest.getParameterValues(AuthConstants.CLIENT_ID_PARAM_NAME)[0])) {
       // todo: error handling
       return null;

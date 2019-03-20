@@ -1,10 +1,5 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,14 +8,17 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "clients")
 public class Client implements Serializable {
 
-  @Id
-  @GeneratedValue
-  private long id;
+  @Id @GeneratedValue private long id;
 
   @Column(nullable = false)
   private String name;
@@ -31,8 +29,7 @@ public class Client implements Serializable {
   @Column(nullable = false)
   private boolean active;
 
-  @Version
-  private long version;
+  @Version private long version;
 
   @OneToMany(mappedBy = "client")
   private Set<Role> roles;
@@ -80,10 +77,6 @@ public class Client implements Serializable {
     return active;
   }
 
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
   public long getVersion() {
     return version;
   }
@@ -104,26 +97,36 @@ public class Client implements Serializable {
     return this.active;
   }
 
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
   /**
    * Get the owner of the client.
+   *
    * @return the owner of the client, should be only one.
    */
   public User getOwner() {
-    UserClient userClient = userClients.stream().filter(UserClient::isOwner).findFirst().orElse(null);
+    UserClient userClient =
+        userClients.stream().filter(UserClient::isOwner).findFirst().orElse(null);
     return userClient == null ? null : userClient.getUser();
   }
 
   /**
    * Get all users of the client except the owner.
+   *
    * @return all users registered on the client except the owner, null if no one has registered.
    */
   public Set<User> getUsers() {
-    return userClients.stream().filter(UserClient::isOwner)
-            .map(UserClient::getUser).collect(Collectors.toSet());
+    return userClients.stream()
+        .filter(UserClient::isOwner)
+        .map(UserClient::getUser)
+        .collect(Collectors.toSet());
   }
 
   /**
    * Add a user to the client, the user cannot be the owner.
+   *
    * @param user
    */
   public void addUser(User user) {
@@ -134,6 +137,7 @@ public class Client implements Serializable {
 
   /**
    * Remove a user from the client, the user cannot be the owner.
+   *
    * @param user to removed, cannot be the owner
    */
   public void removeUser(User user) {
@@ -144,12 +148,11 @@ public class Client implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     Client client = (Client) o;
-    return id == client.id && name.equals(client.name)
+    return id == client.id
+        && name.equals(client.name)
         && oauth2ClientId.equals(client.oauth2ClientId);
   }
 

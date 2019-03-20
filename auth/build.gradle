@@ -1,7 +1,7 @@
 plugins {
-  id 'org.springframework.boot' version "2.1.2.RELEASE"
-  id 'java'
-  id 'war'
+    id 'org.springframework.boot' version "2.1.2.RELEASE"
+    id 'java'
+    id 'war'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -10,7 +10,7 @@ sourceCompatibility = '1.8'
 
 dependencies {
     implementation project(":core")
-    
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 

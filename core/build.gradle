@@ -1,14 +1,14 @@
 plugins {
-  id 'org.springframework.boot' version "2.1.2.RELEASE" apply false // prevent bootJar to be created
-  id 'java-library'
+    id 'org.springframework.boot' version "2.1.2.RELEASE" apply false // prevent bootJar to be created
+    id 'java-library'
 }
 
 apply plugin: 'io.spring.dependency-management'
 // imports BOM to let spring resolve version for dependencies
 dependencyManagement {
-	imports {
-		mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-	}
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
 }
 
 sourceCompatibility = '1.8'

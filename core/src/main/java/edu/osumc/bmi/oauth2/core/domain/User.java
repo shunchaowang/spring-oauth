@@ -1,13 +1,5 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
-import org.apache.commons.collections.CollectionUtils;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,33 +12,31 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
 
-  @Id
-  @GeneratedValue
-  private long id;
-
+  public static UserBuilder builder = new UserBuilder();
+  @Id @GeneratedValue private long id;
   @Column(nullable = false, length = 64, unique = true)
   private String username;
-
   @Column(nullable = false)
   private String password;
-
   @Column(nullable = false)
   private boolean active;
-
-  @Version
-  private long version;
-
+  @Version private long version;
   // many to many association with extra columns
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Set<UserClient> userClients;
-
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", nullable = false),
+  @JoinTable(
+      name = "users_roles",
+      joinColumns = @JoinColumn(name = "user_id", nullable = false),
       inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
   private Set<Role> roles;
 
@@ -84,10 +74,6 @@ public class User implements Serializable {
     return active;
   }
 
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
   public long getVersion() {
     return version;
   }
@@ -100,6 +86,10 @@ public class User implements Serializable {
     return this.active;
   }
 
+  public void setActive(boolean active) {
+    this.active = active;
+  }
+
   public Set<Role> getRoles() {
     return roles;
   }
@@ -109,16 +99,18 @@ public class User implements Serializable {
   }
 
   public Set<Client> getClientOwned() {
-    return userClients.stream().filter(UserClient::isOwner)
-            .map(UserClient::getClient).collect(Collectors.toSet());
+    return userClients.stream()
+        .filter(UserClient::isOwner)
+        .map(UserClient::getClient)
+        .collect(Collectors.toSet());
   }
 
   public Set<Client> getClientRegistered() {
-    return userClients.stream().filter(userClient -> !userClient.isOwner())
-            .map(UserClient::getClient).collect(Collectors.toSet());
+    return userClients.stream()
+        .filter(userClient -> !userClient.isOwner())
+        .map(UserClient::getClient)
+        .collect(Collectors.toSet());
   }
-
-  public static UserBuilder builder = new UserBuilder();
 
   public static class UserBuilder {
 
@@ -128,8 +120,7 @@ public class User implements Serializable {
 
     private boolean active;
 
-    public UserBuilder() {
-    }
+    public UserBuilder() {}
 
     public UserBuilder username(String username) {
       this.username = username;

@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface HasRole {
 
-    String value() default "";
-    boolean owner() default false;
+  String value() default "";
+
+  boolean owner() default false;
 }

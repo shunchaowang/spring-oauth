@@ -7,11 +7,11 @@ public class CoreProperties {
 
   private PersistenceProperties persistence = new PersistenceProperties();
 
-  public void setPersistence(PersistenceProperties persistence) {
-    this.persistence = persistence;
-  }
-
   public PersistenceProperties getPersistence() {
     return persistence;
+  }
+
+  public void setPersistence(PersistenceProperties persistence) {
+    this.persistence = persistence;
   }
 }

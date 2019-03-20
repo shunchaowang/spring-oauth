@@ -6,30 +6,25 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 @Configuration
 @EnableResourceServer
 @EnableConfigurationProperties(ServiceProperties.class)
 @EnableAspectJAutoProxy
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-  @Autowired
-  private ServiceProperties serviceProperties;
+  @Autowired private ServiceProperties serviceProperties;
 
   @Bean
   public RemoteTokenServices tokenServices() {
     RemoteTokenServices tokenServices = new RemoteTokenServices();
 
-    tokenServices
-        .setCheckTokenEndpointUrl(serviceProperties.getAuthServer().getCheckTokenEndpointUrl());
+    tokenServices.setCheckTokenEndpointUrl(
+        serviceProperties.getAuthServer().getCheckTokenEndpointUrl());
     tokenServices.setClientId(serviceProperties.getAuthServer().getClientId());
     tokenServices.setClientSecret(serviceProperties.getAuthServer().getClientSecret());
 

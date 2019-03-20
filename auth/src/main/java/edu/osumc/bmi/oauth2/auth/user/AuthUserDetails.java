@@ -1,15 +1,13 @@
 package edu.osumc.bmi.oauth2.auth.user;
 
-import edu.osumc.bmi.oauth2.core.domain.Client;
-import edu.osumc.bmi.oauth2.core.domain.Role;
 import edu.osumc.bmi.oauth2.core.domain.User;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class AuthUserDetails implements UserDetails {
 
@@ -31,13 +29,13 @@ public class AuthUserDetails implements UserDetails {
    */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-//    Collection<GrantedAuthority> authorities = new ArrayList<>();
-//
-//    for (Role role : user.getRoles()) {
-//      SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-//      authorities.add(authority);
-//    }
-//    return authorities;
+    //    Collection<GrantedAuthority> authorities = new ArrayList<>();
+    //
+    //    for (Role role : user.getRoles()) {
+    //      SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
+    //      authorities.add(authority);
+    //    }
+    //    return authorities;
     return new ArrayList<>();
   }
 
@@ -65,7 +63,7 @@ public class AuthUserDetails implements UserDetails {
    * Indicates whether the user's account has expired. An expired account cannot be authenticated.
    *
    * @return <code>true</code> if the user's account is valid (ie non-expired), <code>false</code>
-   *         if no longer valid (ie expired)
+   *     if no longer valid (ie expired)
    */
   @Override
   public boolean isAccountNonExpired() {

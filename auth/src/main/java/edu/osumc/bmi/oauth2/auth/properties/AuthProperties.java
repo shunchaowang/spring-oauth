@@ -7,11 +7,11 @@ public class AuthProperties {
 
   private TokenProperties token = new TokenProperties();
 
-  public void setToken(TokenProperties token) {
-    this.token = token;
-  }
-
   public TokenProperties getToken() {
     return token;
+  }
+
+  public void setToken(TokenProperties token) {
+    this.token = token;
   }
 }

@@ -25,9 +25,11 @@ public class TimedAspect {
     } finally {
       long end = System.currentTimeMillis();
 
-      logger.info("{}.{} took {} ms", joinPoint.getSignature().getDeclaringType().getSimpleName(),
-          joinPoint.getSignature().getName(), end - start);
+      logger.info(
+          "{}.{} took {} ms",
+          joinPoint.getSignature().getDeclaringType().getSimpleName(),
+          joinPoint.getSignature().getName(),
+          end - start);
     }
   }
-
 }

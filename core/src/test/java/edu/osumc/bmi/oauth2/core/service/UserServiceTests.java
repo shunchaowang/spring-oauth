@@ -1,7 +1,5 @@
 package edu.osumc.bmi.oauth2.core.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.repository.ClientRepository;
 import edu.osumc.bmi.oauth2.core.repository.RoleRepository;
@@ -14,19 +12,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 @RunWith(SpringRunner.class)
 public class UserServiceTests {
 
-  @TestConfiguration
-  static class UserServiceTestsContextConfiguration {
-    @Bean
-    public UserService userService() {
-      return new UserServiceImpl();
-    }
-  }
-
   @Autowired private UserService userService;
-
   @MockBean private UserRepository userRepository;
   @MockBean private ClientRepository clientRepository;
   @MockBean private RoleRepository roleRepository;
@@ -38,5 +29,13 @@ public class UserServiceTests {
     user = userService.createOAuth2Admin(user);
 
     assertThat(user != null);
+  }
+
+  @TestConfiguration
+  static class UserServiceTestsContextConfiguration {
+    @Bean
+    public UserService userService() {
+      return new UserServiceImpl();
+    }
   }
 }

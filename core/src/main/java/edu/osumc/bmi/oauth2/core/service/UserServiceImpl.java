@@ -7,21 +7,21 @@ import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.repository.ClientRepository;
 import edu.osumc.bmi.oauth2.core.repository.RoleRepository;
 import edu.osumc.bmi.oauth2.core.repository.UserRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-  @Autowired
-  private ClientRepository clientRepository;
+  @Autowired private ClientRepository clientRepository;
 
-  @Autowired
-  private RoleRepository roleRepository;
+  @Autowired private RoleRepository roleRepository;
 
   @Override
   public User createOAuth2Admin(User user) {
@@ -63,5 +63,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean delete(User user) {
     return false;
+  }
+
+  @Override
+  public Role findRoleByName(String name) {
+    return roleRepository.findByName(name);
   }
 }

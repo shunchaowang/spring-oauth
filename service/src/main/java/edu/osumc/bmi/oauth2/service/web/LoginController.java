@@ -1,85 +1,50 @@
 package edu.osumc.bmi.oauth2.service.web;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.osumc.bmi.oauth2.core.aspect.Timed;
+import edu.osumc.bmi.oauth2.service.aspect.HasRole;
+import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
+import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import edu.osumc.bmi.oauth2.core.aspect.Timed;
-import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
-import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 public class LoginController {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired
-  private ServiceProperties properties;
+  @Autowired private ServiceProperties properties;
 
-  @Autowired
-  private RemoteTokenServices tokenServices;
+  @Autowired private RemoteTokenServices tokenServices;
 
   @GetMapping("/api/hello")
   @ResponseBody
-//  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public String hello(HttpServletRequest request) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Object principal = authentication.getPrincipal();
-    String username = "";
-    if (principal instanceof UserDetails) {
-      username = ((UserDetails)principal).getUsername();
-    } else {
-      username = principal.toString();
-    }
-    logger.info("username from SecurityContextHolder {}", username);
-    String header = request.getHeader(ServiceConstants.HTTP_HEADER_AUTHORIZATION);
-    String token = StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
-    System.out.println("token: " + token);
-    Claims claims =
-            null;
-    try {
-      claims = Jwts.parser().setSigningKey(properties.getAuthServer().getJwtSigningKey().getBytes(ServiceConstants.UTF8))
-      .parseClaimsJws(token).getBody();
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
-    String department = (String) claims.get(ServiceConstants.USER_NAME);
-    System.out.println("department: " + department);
-
+  @HasRole("ROLE_ADMIN")
+  public String hello() {
 
     return "hello world!";
   }
-
 
   @GetMapping("/login/callback")
   @Timed
@@ -94,8 +59,8 @@ public class LoginController {
     ObjectMapper mapper = new ObjectMapper();
     Map<String, Object> responseMap = null;
     try {
-      responseMap = mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {
-      });
+      responseMap =
+          mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {});
     } catch (JsonParseException e) {
       logger.error(e.getMessage());
       e.printStackTrace();
@@ -127,26 +92,27 @@ public class LoginController {
   ResponseEntity<String> requestOAuthTokens(String code) {
 
     MultiValueMap<String, String> params = oauthCodeParams(code);
-    HttpHeaders headers = basicAuthHeaders(properties.getAuthServer().getClientId(),
-        properties.getAuthServer().getClientSecret());
+    HttpHeaders headers =
+        basicAuthHeaders(
+            properties.getAuthServer().getClientId(), properties.getAuthServer().getClientSecret());
     HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-    logger.debug("Http Header Basic Authorization base64 encoded: "
-        + request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+    logger.debug(
+        "Http Header Basic Authorization base64 encoded: "
+            + request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
 
     RestTemplate restTemplate = new RestTemplate();
-    return restTemplate.exchange(properties.getAuthServer().getRequestTokenUrl(), HttpMethod.POST,
-        request, String.class);
+    return restTemplate.exchange(
+        properties.getAuthServer().getRequestTokenUrl(), HttpMethod.POST, request, String.class);
   }
 
-  //todo: tbd
+  // todo: tbd
   private ResponseEntity<String> requestPrincipal(String token, String tokenType) {
 
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.AUTHORIZATION, tokenType + " " + token);
     HttpEntity<?> request = new HttpEntity<>(headers);
     RestTemplate restTemplate = new RestTemplate();
-    return restTemplate.exchange("http://localhost:8080/me", HttpMethod.GET,
-        request, String.class);
+    return restTemplate.exchange("http://localhost:8080/me", HttpMethod.GET, request, String.class);
   }
 
   private MultiValueMap<String, String> oauthCodeParams(String code) {

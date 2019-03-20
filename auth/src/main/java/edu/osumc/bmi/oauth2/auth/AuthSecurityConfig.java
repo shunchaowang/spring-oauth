@@ -16,8 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired
-  private AuthUserDetailsService userDetailsService;
+  @Autowired private AuthUserDetailsService userDetailsService;
 
   /**
    * Override this method to configure the {@link HttpSecurity}. Typically subclasses should not
@@ -44,16 +43,14 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    * {@link AuthenticationManager}. If overridden, the {@link AuthenticationManagerBuilder} should
    * be used to specify the {@link AuthenticationManager}.
    *
-   * <p>
-   * The {@link #authenticationManagerBean()} method can be used to expose the resulting
-   * {@link AuthenticationManager} as a Bean. The {@link #userDetailsServiceBean()} can be used to
-   * expose the last populated {@link UserDetailsService} that is created with the
-   * {@link AuthenticationManagerBuilder} as a Bean. The {@link UserDetailsService} will also
-   * automatically be populated on {@link HttpSecurity#getSharedObject(Class)} for use with other
-   * {@link SecurityContextConfigurer} (i.e. RememberMeConfigurer )
+   * <p>The {@link #authenticationManagerBean()} method can be used to expose the resulting {@link
+   * AuthenticationManager} as a Bean. The {@link #userDetailsServiceBean()} can be used to expose
+   * the last populated {@link UserDetailsService} that is created with the {@link
+   * AuthenticationManagerBuilder} as a Bean. The {@link UserDetailsService} will also automatically
+   * be populated on {@link HttpSecurity#getSharedObject(Class)} for use with other {@link
+   * SecurityContextConfigurer} (i.e. RememberMeConfigurer )
    *
-   * <p>
-   * For example, the following configuration could be used to register in memory authentication
+   * <p>For example, the following configuration could be used to register in memory authentication
    * that exposes an in memory {@link UserDetailsService}:
    *
    * <pre>
@@ -84,8 +81,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   /**
-   * Override this method to expose the {@link AuthenticationManager} from
-   * {@link #configure(AuthenticationManagerBuilder)} to be exposed as a Bean. For example:
+   * Override this method to expose the {@link AuthenticationManager} from {@link
+   * #configure(AuthenticationManagerBuilder)} to be exposed as a Bean. For example:
    *
    * <pre>
    * &#064;Bean(name name="myAuthenticationManager")

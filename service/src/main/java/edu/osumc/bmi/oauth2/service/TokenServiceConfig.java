@@ -15,8 +15,11 @@ public class TokenServiceConfig {
   @Autowired private ServiceProperties properties;
 
   @Bean
-  @ConditionalOnProperty(prefix = "bmi.oauth2.authServer", name = "jwtEnabled", havingValue = "true",
-          matchIfMissing = true)
+  @ConditionalOnProperty(
+      prefix = "bmi.oauth2.authServer",
+      name = "jwtEnabled",
+      havingValue = "true",
+      matchIfMissing = true)
   public JwtAccessTokenConverter jwtAccessTokenConverter() {
     JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
     converter.setSigningKey(properties.getAuthServer().getJwtSigningKey());

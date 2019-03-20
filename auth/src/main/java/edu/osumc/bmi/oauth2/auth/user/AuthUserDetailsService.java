@@ -1,11 +1,8 @@
 package edu.osumc.bmi.oauth2.auth.user;
 
-import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
-import edu.osumc.bmi.oauth2.core.domain.Client;
 import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.service.ClientService;
 import edu.osumc.bmi.oauth2.core.service.UserService;
-import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +13,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Component
 public class AuthUserDetailsService implements UserDetailsService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Autowired
-  private UserService userService;
+  @Autowired private UserService userService;
 
-  @Autowired
-  private ClientService clientService;
+  @Autowired private ClientService clientService;
 
   /**
    * Locates the user based on the username. In the actual implementation, the search may possibly
@@ -36,7 +33,7 @@ public class AuthUserDetailsService implements UserDetailsService {
    * @param username the username identifying the user whose data is required.
    * @return a fully populated user record (never <code>null</code>)
    * @throws UsernameNotFoundException if the user could not be found or the user has no
-   *                                   GrantedAuthority
+   *     GrantedAuthority
    */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
