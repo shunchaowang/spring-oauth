@@ -7,7 +7,7 @@ public class AuthServerProperties {
   private String clientSecret;
   private String requestTokenUrl;
   private String redirectUri;
-  private String storeType;
+  private boolean jwtEnabled = true;
   private String jwtSigningKey = "123456";
 
   public String getCheckTokenEndpointUrl() {
@@ -50,19 +50,19 @@ public class AuthServerProperties {
     return redirectUri;
   }
 
-  public String getStoreType() {
-    return storeType;
-  }
-
-  public void setStoreType(String storeType) {
-    this.storeType = storeType;
-  }
-
   public String getJwtSigningKey() {
     return jwtSigningKey;
   }
 
   public void setJwtSigningKey(String jwtSigningKey) {
     this.jwtSigningKey = jwtSigningKey;
+  }
+
+  public boolean isJwtEnabled() {
+    return jwtEnabled;
+  }
+
+  public void setJwtEnabled(boolean jwtEnabled) {
+    this.jwtEnabled = jwtEnabled;
   }
 }

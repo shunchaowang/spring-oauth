@@ -1,15 +1,22 @@
 package edu.osumc.bmi.oauth2.service.web;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,9 +33,10 @@ import edu.osumc.bmi.oauth2.core.aspect.Timed;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class LoginController {
@@ -43,9 +51,32 @@ public class LoginController {
 
   @GetMapping("/api/hello")
   @ResponseBody
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public String hello() {
+//  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public String hello(HttpServletRequest request) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Object principal = authentication.getPrincipal();
+    String username = "";
+    if (principal instanceof UserDetails) {
+      username = ((UserDetails)principal).getUsername();
+    } else {
+      username = principal.toString();
+    }
+    logger.info("username from SecurityContextHolder {}", username);
+    String header = request.getHeader(ServiceConstants.HTTP_HEADER_AUTHORIZATION);
+    String token = StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
+    System.out.println("token: " + token);
+    Claims claims =
+            null;
+    try {
+      claims = Jwts.parser().setSigningKey(properties.getAuthServer().getJwtSigningKey().getBytes(ServiceConstants.UTF8))
+      .parseClaimsJws(token).getBody();
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    String department = (String) claims.get(ServiceConstants.USER_NAME);
+    System.out.println("department: " + department);
+
+
     return "hello world!";
   }
 

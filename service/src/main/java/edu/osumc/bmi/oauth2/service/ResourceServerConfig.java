@@ -24,9 +24,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
   @Autowired
   private ServiceProperties serviceProperties;
 
-  @Autowired(required = false)
-  private JwtAccessTokenConverter jwtAccessTokenConverter;
-
   @Bean
   public RemoteTokenServices tokenServices() {
     RemoteTokenServices tokenServices = new RemoteTokenServices();
@@ -35,10 +32,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         .setCheckTokenEndpointUrl(serviceProperties.getAuthServer().getCheckTokenEndpointUrl());
     tokenServices.setClientId(serviceProperties.getAuthServer().getClientId());
     tokenServices.setClientSecret(serviceProperties.getAuthServer().getClientSecret());
-
-    if (jwtAccessTokenConverter != null) {
-      tokenServices.setAccessTokenConverter(jwtAccessTokenConverter);
-    }
 
     return tokenServices;
   }

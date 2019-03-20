@@ -1,5 +1,7 @@
 package edu.osumc.bmi.oauth2.auth.web;
 
+import java.security.Principal;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +24,10 @@ import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
 @Controller
 public class LoginController {
 
-  @GetMapping("/welcome")
-  public String welcome() {
-    return "welcome";
-  }
-
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
+  // todo: tbd
+  // my testing apis, delete when released
   @GetMapping("/me")
   @ResponseBody
   public Object getPrincipal(Authentication principal) {
@@ -43,13 +42,18 @@ public class LoginController {
     return principal;
   }
 
-  // @GetMapping("/user/me")
-  // public Map<String, String> user(Principal principal) {
-  // Map<String, String> map = new LinkedHashMap<>();
-  // logger.info("Principal name: " + principal.getName());
-  // map.put("name", principal.getName());
-  // return map;
-  // }
+  /**
+   * The Api to be called by resource servers to retrieve user's info
+   * @param principal
+   * @return
+   */
+   @GetMapping("/user/me")
+   public Map<String, String> user(Principal principal) {
+   Map<String, String> map = new LinkedHashMap<>();
+   logger.info("Principal name: " + principal.getName());
+   map.put("name", principal.getName());
+   return map;
+   }
 
   @GetMapping("/login")
   public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {

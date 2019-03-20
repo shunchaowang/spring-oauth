@@ -31,13 +31,14 @@ public class AuthUserDetails implements UserDetails {
    */
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    Collection<GrantedAuthority> authorities = new ArrayList<>();
-
-    for (Role role : user.getRoles()) {
-      SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-      authorities.add(authority);
-    }
-    return authorities;
+//    Collection<GrantedAuthority> authorities = new ArrayList<>();
+//
+//    for (Role role : user.getRoles()) {
+//      SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
+//      authorities.add(authority);
+//    }
+//    return authorities;
+    return new ArrayList<>();
   }
 
   /**

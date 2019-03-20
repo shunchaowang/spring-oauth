@@ -12,4 +12,8 @@ public interface ServiceConstants {
   final String oauth2AccessToken = "access_token";
   final String oauth2TokenType = "token_type";
   final String oauth2RefreshToken = "refresh_token";
+  final String HTTP_HEADER_AUTHORIZATION = "Authorization";
+  final String HTTP_HEADER_AUTHORIZATION_BEARER = "Bearer";
+  final String UTF8 = "UTF-8";
+  final String USER_NAME = "user_name";
 }
