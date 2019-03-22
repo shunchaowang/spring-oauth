@@ -40,7 +40,7 @@ public class LoginController {
 
   @GetMapping("/api/hello")
   @ResponseBody
-  @HasRole("ROLE_ADMIN")
+  @HasRole("ROLE_USER")
   public ResponseEntity<?> hello() {
 
     return ResponseEntity.ok("Hello World");
@@ -93,9 +93,8 @@ public class LoginController {
   ResponseEntity<String> requestOAuthTokens(String code) {
 
     MultiValueMap<String, String> params = oauthCodeParams(code);
-    HttpHeaders headers =
-        basicAuthHeaders(
-            properties.getAuthServer().getClientId(), properties.getAuthServer().getClientSecret());
+    HttpHeaders headers = basicAuthHeaders(properties.getAuthServer().getClientId(),
+            properties.getAuthServer().getClientSecret());
     HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
     logger.debug(
         "Http Header Basic Authorization base64 encoded: "

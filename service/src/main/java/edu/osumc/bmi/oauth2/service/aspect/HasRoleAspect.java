@@ -29,6 +29,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 @Aspect
 @Component
@@ -65,24 +66,24 @@ public class HasRoleAspect {
 
     HasRole hasRole = AnnotationUtils.findAnnotation(method, HasRole.class);
     if (hasRole == null) {
-      return new ResponseEntity<>("Operation is protected.", HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>("Operation is protected.", HttpStatus.FORBIDDEN);
     }
 
     Client client = clientService.findByOauth2ClientId(properties.getAuthServer().getClientId());
     User user = userService.get(username);
     if (hasRole.owner() && !user.getClientOwned().contains(client)) {
-      return new ResponseEntity<>("User is not the owner.", HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>("User is not the owner.", HttpStatus.FORBIDDEN);
     }
 
     String value = hasRole.value();
     Role role = userService.findRoleByName(value);
 
     if (role == null) {
-      return new ResponseEntity<>("Role doesn't exist.", HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>("Role doesn't exist.", HttpStatus.FORBIDDEN);
     }
 
     if (!user.getRoles().contains(role)) {
-      return new ResponseEntity<>("User doesn't have the role", HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>("User doesn't have the role", HttpStatus.FORBIDDEN);
     }
 
     ResponseEntity<?> result = null;
@@ -101,17 +102,11 @@ public class HasRoleAspect {
     String header = request.getHeader(ServiceConstants.HTTP_HEADER_AUTHORIZATION);
     String token =
         StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
-    Claims claims = null;
-    try {
-      claims =
-          Jwts.parser()
-              .setSigningKey(
-                  properties.getAuthServer().getJwtSigningKey().getBytes(ServiceConstants.UTF8))
-              .parseClaimsJws(token)
-              .getBody();
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
+    Claims claims = Jwts.parser()
+                    .setSigningKey(properties.getAuthServer().getJwtSigningKey().getBytes(StandardCharsets.UTF_8))
+                    .parseClaimsJws(token)
+                    .getBody();
+
     return (String) claims.get(ServiceConstants.USER_NAME);
   }
 
