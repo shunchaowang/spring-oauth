@@ -10,17 +10,18 @@ import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -44,11 +45,11 @@ public class HasRoleAspect {
   // get username from jwt token or security context
   // load user role from database
   // check if user has role specified by the annotation
-  @Before("@annotation(edu.osumc.bmi.oauth2.service.aspect.HasRole) && execution(public * *(..))")
-  public void hasRole(final JoinPoint joinPoint) throws UnauthorizedUserException {
+  @Around("@annotation(edu.osumc.bmi.oauth2.service.aspect.HasRole) && execution(public * *(..))")
+  public ResponseEntity<?> hasRole(final ProceedingJoinPoint joinPoint) {
 
     Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-    String username = null;
+    String username;
 
     if (properties.getAuthServer().isJwtEnabled()) {
       logger.info("jwt is enabled.");
@@ -59,30 +60,39 @@ public class HasRoleAspect {
     }
 
     if (StringUtils.isBlank(username)) {
-      throw new UnauthorizedUserException("User doesn't exist.");
+      return new ResponseEntity<>("User doesn't exist.", HttpStatus.UNAUTHORIZED);
     }
 
     HasRole hasRole = AnnotationUtils.findAnnotation(method, HasRole.class);
     if (hasRole == null) {
-      return;
+      return new ResponseEntity<>("Operation is protected.", HttpStatus.UNAUTHORIZED);
     }
 
     Client client = clientService.findByOauth2ClientId(properties.getAuthServer().getClientId());
     User user = userService.get(username);
     if (hasRole.owner() && !user.getClientOwned().contains(client)) {
-      throw new UnauthorizedUserException("User doesn't own the client.");
+      return new ResponseEntity<>("User is not the owner.", HttpStatus.UNAUTHORIZED);
     }
 
     String value = hasRole.value();
     Role role = userService.findRoleByName(value);
 
     if (role == null) {
-      throw new UnauthorizedUserException("Role doesn't exist.");
+      return new ResponseEntity<>("Role doesn't exist.", HttpStatus.UNAUTHORIZED);
     }
 
     if (!user.getRoles().contains(role)) {
-      throw new UnauthorizedUserException("User doesn't have the role.");
+      return new ResponseEntity<>("User doesn't have the role", HttpStatus.UNAUTHORIZED);
     }
+
+    ResponseEntity<?> result = null;
+    try {
+      result = (ResponseEntity<?>) joinPoint.proceed();
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
+    }
+
+    return result;
   }
 
   private String parseUsernameFromJwtToken() {

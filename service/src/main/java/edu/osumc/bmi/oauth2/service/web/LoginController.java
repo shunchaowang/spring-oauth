@@ -41,9 +41,10 @@ public class LoginController {
   @GetMapping("/api/hello")
   @ResponseBody
   @HasRole("ROLE_ADMIN")
-  public String hello() {
+  public ResponseEntity<?> hello() {
 
-    return "hello world!";
+    return ResponseEntity.ok("Hello World");
+    //    return "hello world!";
   }
 
   @GetMapping("/login/callback")

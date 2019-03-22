@@ -23,16 +23,21 @@ public class User implements Serializable {
 
   public static UserBuilder builder = new UserBuilder();
   @Id @GeneratedValue private long id;
+
   @Column(nullable = false, length = 64, unique = true)
   private String username;
+
   @Column(nullable = false)
   private String password;
+
   @Column(nullable = false)
   private boolean active;
+
   @Version private long version;
   // many to many association with extra columns
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Set<UserClient> userClients;
+
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "users_roles",
