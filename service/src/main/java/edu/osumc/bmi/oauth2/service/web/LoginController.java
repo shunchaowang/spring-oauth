@@ -25,9 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 
 @RestController
 public class LoginController {
@@ -47,47 +49,48 @@ public class LoginController {
     //    return "hello world!";
   }
 
+
   @GetMapping("/login/callback")
   @Timed
-  public ResponseEntity<String> authorizationCodeCallback(@RequestParam("code") String code) {
+  public DeferredResult<ResponseEntity<?>> authorizationCodeCallback(@RequestParam("code") String code) {
 
-    logger.info("Authorization Server Code: " + code);
+    DeferredResult<ResponseEntity<?>> result = DeferredResultBuilder.getInstance().build();
 
-    // make a post to OAuth2 Authorization Server to get the tokens
-    ResponseEntity<String> response = requestOAuthTokens(code);
+    ForkJoinPool.commonPool().submit(() -> {
 
-    // extract access_token from response
-    ObjectMapper mapper = new ObjectMapper();
-    Map<String, Object> responseMap = null;
-    try {
-      responseMap =
-          mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {});
-    } catch (JsonParseException e) {
-      logger.error(e.getMessage());
-      e.printStackTrace();
-    } catch (JsonMappingException e) {
-      logger.error(e.getMessage());
-      e.printStackTrace();
-    } catch (IOException e) {
-      logger.error(e.getMessage());
-      e.printStackTrace();
-    }
+      // make a post to OAuth2 Authorization Server to get the tokens
+      ResponseEntity<String> response = requestOAuthTokens(code);
 
-    String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
+      // extract access_token from response
+      ObjectMapper mapper = new ObjectMapper();
+      Map<String, Object> responseMap = null;
+      try {
+        responseMap =
+                mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {});
+      } catch (JsonParseException e) {
+        logger.error(e.getMessage());
+        e.printStackTrace();
+      } catch (JsonMappingException e) {
+        logger.error(e.getMessage());
+        e.printStackTrace();
+      } catch (IOException e) {
+        logger.error(e.getMessage());
+        e.printStackTrace();
+      }
 
-    OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
-    logger.info("OAuth2Authentication {}", authentication);
+      String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
 
-    String principal = (String) authentication.getPrincipal(); // should be the username
-    logger.info("username {}", principal);
-    // have to inject an Authentication to the Security Context
-    // OAuth2Authentication is constructed by an OAuth2Request and a
-    // UsernamePasswordAuthenticationToken,
-    // to inject a new Authentication into the security context, we have to create a new
-    // UsernamePasswordAuthenticationToken,
-    // for authorities of the authentication is immutable.
+      OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
+      logger.info("OAuth2Authentication {}", authentication);
 
-    return response;
+      String principal = (String) authentication.getPrincipal(); // should be the username
+      logger.info("username {}", principal);
+
+      result.setResult(response);
+    });
+
+    return result;
+
   }
 
   ResponseEntity<String> requestOAuthTokens(String code) {
