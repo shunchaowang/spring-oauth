@@ -49,48 +49,54 @@ public class LoginController {
     //    return "hello world!";
   }
 
-
   @GetMapping("/login/callback")
   @Timed
-  public DeferredResult<ResponseEntity<?>> authorizationCodeCallback(@RequestParam("code") String code) {
+  public DeferredResult<ResponseEntity<?>> authorizationCodeCallback(
+      @RequestParam("code") String code) {
 
-    DeferredResult<ResponseEntity<?>> result = DeferredResultBuilder.getInstance().build();
+    DeferredResult<ResponseEntity<?>> result = DeferredResultBuilder.INSTANCE.build();
 
-    ForkJoinPool.commonPool().submit(() -> {
+    ForkJoinPool.commonPool()
+        .submit(
+            () -> {
 
-      // make a post to OAuth2 Authorization Server to get the tokens
-      ResponseEntity<String> response = requestOAuthTokens(code);
+              // make a post to OAuth2 Authorization Server to get the tokens
+              ResponseEntity<String> response = requestOAuthTokens(code);
 
-      // extract access_token from response
-      ObjectMapper mapper = new ObjectMapper();
-      Map<String, Object> responseMap = null;
-      try {
-        responseMap =
-                mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {});
-      } catch (JsonParseException e) {
-        logger.error(e.getMessage());
-        e.printStackTrace();
-      } catch (JsonMappingException e) {
-        logger.error(e.getMessage());
-        e.printStackTrace();
-      } catch (IOException e) {
-        logger.error(e.getMessage());
-        e.printStackTrace();
-      }
+              // extract access_token from response
+              ObjectMapper mapper = new ObjectMapper();
+              Map<String, Object> responseMap = null;
+              try {
+                responseMap =
+                    mapper.readValue(
+                        response.getBody(), new TypeReference<Map<String, Object>>() {});
+              } catch (JsonParseException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              } catch (JsonMappingException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              } catch (IOException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              }
 
-      String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
+              if (responseMap == null) {
+                return;
+              }
 
-      OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
-      logger.info("OAuth2Authentication {}", authentication);
+              String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
 
-      String principal = (String) authentication.getPrincipal(); // should be the username
-      logger.info("username {}", principal);
+              OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
+              logger.info("OAuth2Authentication {}", authentication);
 
-      result.setResult(response);
-    });
+              String principal = (String) authentication.getPrincipal(); // should be the username
+              logger.info("username {}", principal);
+
+              result.setResult(response);
+            });
 
     return result;
-
   }
 
   ResponseEntity<String> requestOAuthTokens(String code) {
