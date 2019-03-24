@@ -1,17 +1,6 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -104,14 +93,16 @@ public class User implements Serializable {
   }
 
   public Set<Client> getClientOwned() {
-    return userClients.stream()
+    return userClients
+        .stream()
         .filter(UserClient::isOwner)
         .map(UserClient::getClient)
         .collect(Collectors.toSet());
   }
 
   public Set<Client> getClientRegistered() {
-    return userClients.stream()
+    return userClients
+        .stream()
         .filter(userClient -> !userClient.isOwner())
         .map(UserClient::getClient)
         .collect(Collectors.toSet());

@@ -1,13 +1,6 @@
 package edu.osumc.bmi.oauth2.core.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -118,7 +111,8 @@ public class Client implements Serializable {
    * @return all users registered on the client except the owner, null if no one has registered.
    */
   public Set<User> getUsers() {
-    return userClients.stream()
+    return userClients
+        .stream()
         .filter(UserClient::isOwner)
         .map(UserClient::getUser)
         .collect(Collectors.toSet());
