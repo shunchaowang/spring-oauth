@@ -14,7 +14,7 @@ insert into oauth_client_details
  refresh_token_validity, additional_information, autoapprove)
   value ("client2", "$2a$10$L3cKmG.fiN8V2Tenw2oaDOc.3SlxyncnJwUOqLRS/x1dKOsIk29c2",
          "all,read,write",
-         "password,authorization_code,refresh_token", "http://example.com", null, 36000, 360000,
+         "password,authorization_code,refresh_token", "http://localhost:8081/login/callback", null, 36000, 360000,
          null,
          false);
 insert into oauth_client_details
