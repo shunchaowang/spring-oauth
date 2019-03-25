@@ -18,7 +18,7 @@ public class AuthClientDetails implements ClientDetails {
 
   @Override
   public String getClientId() {
-    return client.getId() + "";
+    return client.getOauth2ClientId();
   }
 
   @Override
