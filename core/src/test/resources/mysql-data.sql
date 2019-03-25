@@ -6,7 +6,7 @@ insert into oauth_client_details
   value ("client1", "$2a$10$L3cKmG.fiN8V2Tenw2oaDOc.3SlxyncnJwUOqLRS/x1dKOsIk29c2", "all,read,write",
          "password,authorization_code,refresh_token", "http://client1.com", null, 36000, 360000,
          null,
-         true);
+         "true");
 
 insert into oauth_client_details
 (client_id, client_secret, scope, authorized_grant_types,
@@ -16,7 +16,7 @@ insert into oauth_client_details
          "all,read,write",
          "password,authorization_code,refresh_token", "http://localhost:8081/login/callback", null, 36000, 360000,
          null,
-         false);
+         "true");
 insert into oauth_client_details
 (client_id, client_secret, scope, authorized_grant_types,
  web_server_redirect_uri, authorities, access_token_validity,
@@ -25,4 +25,4 @@ insert into oauth_client_details
          "all,read,write",
          "password,authorization_code,refresh_token", "http://example.com", null, 36000, 360000,
          null,
-         true);
+         "true");

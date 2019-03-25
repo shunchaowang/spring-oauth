@@ -1,6 +1,7 @@
 package edu.osumc.bmi.oauth2.auth.client;
 
 import edu.osumc.bmi.oauth2.core.domain.Client;
+import edu.osumc.bmi.oauth2.core.domain.OAuthClientDetail;
 import edu.osumc.bmi.oauth2.core.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -23,7 +24,7 @@ public class AuthClientDetailsService implements ClientDetailsService {
    */
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-    Client client = clientService.findByOauth2ClientId(clientId);
-    return new AuthClientDetails(client);
+    OAuthClientDetail clientDetail = clientService.getOAuthClientDetail(clientId);
+    return new AuthClientDetails(clientDetail);
   }
 }

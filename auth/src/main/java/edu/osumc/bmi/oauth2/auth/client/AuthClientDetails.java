@@ -1,24 +1,29 @@
 package edu.osumc.bmi.oauth2.auth.client;
 
 import edu.osumc.bmi.oauth2.core.domain.Client;
+import edu.osumc.bmi.oauth2.core.domain.OAuthClientDetail;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class AuthClientDetails implements ClientDetails {
 
-  private Client client;
+  private OAuthClientDetail clientDetail;
 
-  public AuthClientDetails(Client client) {
-    this.client = client;
+  public AuthClientDetails(OAuthClientDetail clientDetail) {
+    this.clientDetail = clientDetail;
   }
 
   @Override
   public String getClientId() {
-    return client.getOauth2ClientId();
+    return clientDetail.getClientId();
   }
 
   @Override
@@ -33,7 +38,7 @@ public class AuthClientDetails implements ClientDetails {
 
   @Override
   public String getClientSecret() {
-    return null;
+    return clientDetail.getClientSecret();
   }
 
   @Override
@@ -43,37 +48,46 @@ public class AuthClientDetails implements ClientDetails {
 
   @Override
   public Set<String> getScope() {
-    return null;
+    if (StringUtils.isBlank(clientDetail.getScope())) return null;
+    return new HashSet<>(Arrays.asList(StringUtils.split(clientDetail.getScope(), ",")));
   }
 
   @Override
   public Set<String> getAuthorizedGrantTypes() {
-    return null;
+    if (StringUtils.isBlank(clientDetail.getAuthorizedGrantTypes()))return null;
+    return new HashSet<>(Arrays.asList(StringUtils.split(clientDetail.getAuthorizedGrantTypes(), ",")));
   }
 
   @Override
   public Set<String> getRegisteredRedirectUri() {
-    return null;
+    if (StringUtils.isBlank(clientDetail.getWebServerRedirectUri())) return null;
+//    return Set.of(StringUtils.split(clientDetail.getWebServerRedirectUri(), ","));
+      return new HashSet<>(Arrays.asList(StringUtils.split(clientDetail.getWebServerRedirectUri(), ",")));
   }
 
   @Override
   public Collection<GrantedAuthority> getAuthorities() {
-    return null;
+    if (StringUtils.isBlank(clientDetail.getAuthorities()))return null;
+    Collection<GrantedAuthority> authorities = new HashSet<>();
+    Arrays.stream(StringUtils.split(clientDetail.getAuthorities(), ",")).forEach((auth) -> {
+      authorities.add(new SimpleGrantedAuthority(auth));
+    });
+    return authorities;
   }
 
   @Override
   public Integer getAccessTokenValiditySeconds() {
-    return null;
+    return clientDetail.getAccessTokenValidity();
   }
 
   @Override
   public Integer getRefreshTokenValiditySeconds() {
-    return null;
+    return clientDetail.getRefreshTokenValidity();
   }
 
   @Override
   public boolean isAutoApprove(String scope) {
-    return false;
+    return "1".equals(clientDetail.getAutoApprove()) || Boolean.valueOf(clientDetail.getAutoApprove());
   }
 
   @Override
