@@ -6,6 +6,7 @@ import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 
 @Controller
 public class LoginController {
@@ -29,7 +32,7 @@ public class LoginController {
 
   // todo: tbd
   // my testing apis, delete when released
-  @GetMapping("/me")
+  @GetMapping("/user/me")
   @ResponseBody
   public Object getPrincipal(Authentication principal) {
 
@@ -49,12 +52,20 @@ public class LoginController {
    * @param principal
    * @return
    */
-  @GetMapping("/user/me")
-  public Map<String, String> user(Principal principal) {
-    Map<String, String> map = new LinkedHashMap<>();
-    logger.info("Principal name: " + principal.getName());
-    map.put("name", principal.getName());
-    return map;
+  @GetMapping("/me")
+  public DeferredResult<ResponseEntity<Map<String, String>>> user(Principal principal) {
+    DeferredResult<ResponseEntity<Map<String, String>>> result = new DeferredResult<>();
+
+    ForkJoinPool.commonPool()
+        .submit(
+            () -> {
+              Map<String, String> map = new LinkedHashMap<>();
+              logger.info("Principal name: " + principal.getName());
+              map.put("name", principal.getName());
+              result.setResult(ResponseEntity.ok(map));
+            });
+
+    return result;
   }
 
   @GetMapping("/login")
