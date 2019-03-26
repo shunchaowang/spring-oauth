@@ -2,7 +2,7 @@ package edu.osumc.bmi.oauth2.core.properties;
 
 public class PersistenceProperties {
   private String driver = "com.mysql.cj.jdbc.Driver";
-  private String url = "jdbc:mysql://127.0.0.1:3306/bmi-oauth2?useSSL=false";
+  private String url = "jdbc:mysql://127.0.0.1:3306/bmi-oauth2?serverTimezone=EST5EDT";
   private String username = "root";
   private String password = "";
 
