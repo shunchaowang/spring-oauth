@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +23,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
-@RestController
+@Controller
 public class LoginController {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -45,9 +48,10 @@ public class LoginController {
     //    return "hello world!";
   }
 
-  @GetMapping("/login/callback")
+  @GetMapping("/login/callback-self")
+  @ResponseBody
   @Timed
-  public DeferredResult<ResponseEntity<?>> authorizationCodeCallback(
+  public DeferredResult<ResponseEntity<?>> authorizationCodeCallbackSelf(
       @RequestParam("code") String code) {
 
     DeferredResult<ResponseEntity<?>> result = DeferredResultBuilder.INSTANCE.build();
@@ -95,7 +99,60 @@ public class LoginController {
     return result;
   }
 
-  ResponseEntity<String> requestOAuthTokens(String code) {
+    @GetMapping("/login/callback")
+    @Timed
+    public DeferredResult<RedirectView> authorizationCodeCallback(
+            @RequestParam("code") String code) {
+
+        DeferredResult<RedirectView> result = new DeferredResult<>();
+
+        ForkJoinPool.commonPool()
+                .submit(
+                        () -> {
+
+                            // make a post to OAuth2 Authorization Server to get the tokens
+                            ResponseEntity<String> response = requestOAuthTokens(code);
+
+                            // extract access_token from response
+                            ObjectMapper mapper = new ObjectMapper();
+                            Map<String, Object> responseMap = null;
+                            try {
+                                responseMap =
+                                        mapper.readValue(
+                                                response.getBody(), new TypeReference<Map<String, Object>>() {});
+                            } catch (JsonParseException e) {
+                                logger.error(e.getMessage());
+                                e.printStackTrace();
+                            } catch (JsonMappingException e) {
+                                logger.error(e.getMessage());
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                logger.error(e.getMessage());
+                                e.printStackTrace();
+                            }
+
+                            if (responseMap == null) {
+                                return;
+                            }
+
+                            String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
+
+                            OAuth2Authentication authentication = tokenServices.loadAuthentication(token);
+                            logger.info("OAuth2Authentication {}", authentication);
+
+                            String principal = (String) authentication.getPrincipal(); // should be the username
+                            logger.info("username {}", principal);
+
+                            RedirectView redirectView = new RedirectView();
+                            redirectView.setUrl("http://localhost:8000?token=" + token);
+
+                            result.setResult(redirectView);
+                        });
+
+        return result;
+    }
+
+  private ResponseEntity<String> requestOAuthTokens(String code) {
 
     MultiValueMap<String, String> params = oauthCodeParams(code);
     HttpHeaders headers =
