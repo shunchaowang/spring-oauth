@@ -15,4 +15,5 @@ public interface ServiceConstants {
   final String HTTP_HEADER_AUTHORIZATION = "Authorization";
   final String HTTP_HEADER_AUTHORIZATION_BEARER = "Bearer";
   final String USER_NAME = "user_name";
+  final String tokenParamName = "token";
 }

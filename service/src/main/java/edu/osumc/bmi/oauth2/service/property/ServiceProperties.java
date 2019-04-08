@@ -6,6 +6,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ServiceProperties {
 
   private AuthServerProperties authServer = new AuthServerProperties();
+  private ClientProperties client = new ClientProperties();
+
+  public ClientProperties getClient() {
+    return client;
+  }
+
+  public void setClient(ClientProperties client) {
+    this.client = client;
+  }
 
   public AuthServerProperties getAuthServer() {
     return authServer;
