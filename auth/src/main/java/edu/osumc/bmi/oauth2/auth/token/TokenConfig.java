@@ -7,11 +7,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
 
@@ -45,7 +47,10 @@ public class TokenConfig {
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
       JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-      converter.setSigningKey(properties.getToken().getJwtSigningKey());
+//      converter.setSigningKey(properties.getToken().getJwtSigningKey());
+      KeyStoreKeyFactory keyStoreKeyFactory =
+              new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "wang22015".toCharArray());
+      converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
       return converter;
     }
 

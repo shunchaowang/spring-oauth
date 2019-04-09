@@ -27,8 +27,18 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
+import java.net.URL;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+import java.util.regex.Pattern;
 
 @Aspect
 @Component
@@ -53,7 +63,12 @@ public class HasRoleAspect {
 
     if (properties.getAuthServer().isJwtEnabled()) {
       logger.info("jwt is enabled.");
-      username = parseUsernameFromJwtToken();
+      try {
+        username = parseUsernameFromJwtToken();
+      } catch (Exception e) {
+        logger.error(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token cannot be not verified!");
+      }
     } else {
       logger.info("jwt is disabled.");
       username = retrieveUsernameFromSecurityContext();
@@ -95,7 +110,13 @@ public class HasRoleAspect {
     return result;
   }
 
-  private String parseUsernameFromJwtToken() {
+  private String parseUsernameFromJwtToken()
+      throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+    //    CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+    PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(loadPEM("jwt.cert")));
+
     HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     String header = request.getHeader(ServiceConstants.HTTP_HEADER_AUTHORIZATION);
@@ -103,8 +124,10 @@ public class HasRoleAspect {
         StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
     Claims claims =
         Jwts.parser()
-            .setSigningKey(
-                properties.getAuthServer().getJwtSigningKey().getBytes(StandardCharsets.UTF_8))
+            //            .setSigningKey(
+            //
+            // properties.getAuthServer().getJwtSigningKey().getBytes(StandardCharsets.UTF_8))
+            .setSigningKey(publicKey)
             .parseClaimsJws(token)
             .getBody();
 
@@ -118,5 +141,24 @@ public class HasRoleAspect {
     } else {
       return principal.toString();
     }
+  }
+
+  private byte[] loadPEM(String resource) throws IOException {
+    URL url = getClass().getClassLoader().getResource(resource);
+    if (url == null) throw new IOException("Cert file not exist!");
+    InputStream in = url.openStream();
+    String pem = new String(readAllBytes(in));
+    Pattern parser = Pattern.compile("(?m)(?s)^---*BEGIN.*---*$(.*)^---*END.*---*$.*");
+    String encoded = parser.matcher(pem).replaceFirst("$1");
+    return Base64.getMimeDecoder().decode(encoded);
+  }
+
+  private byte[] readAllBytes(InputStream in) throws IOException {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    byte[] buffer = new byte[1024];
+    for (int read = 0; read != -1; read = in.read(buffer)) {
+      outputStream.write(buffer, 0, read);
+    }
+    return outputStream.toByteArray();
   }
 }
