@@ -9,6 +9,8 @@ public class AuthServerProperties {
   private String redirectUri;
   private boolean jwtEnabled = true;
   private String jwtSigningKey = "123456";
+  private boolean jwtPKIEnabled = false;
+  private String jwtPublicKey;
 
   public String getCheckTokenEndpointUrl() {
     return checkTokenEndpointUrl;
@@ -64,5 +66,21 @@ public class AuthServerProperties {
 
   public void setJwtEnabled(boolean jwtEnabled) {
     this.jwtEnabled = jwtEnabled;
+  }
+
+  public boolean isJwtPKIEnabled() {
+    return jwtPKIEnabled;
+  }
+
+  public void setJwtPKIEnabled(boolean jwtPKIEnabled) {
+    this.jwtPKIEnabled = jwtPKIEnabled;
+  }
+
+  public String getJwtPublicKey() {
+    return jwtPublicKey;
+  }
+
+  public void setJwtPublicKey(String jwtPublicKey) {
+    this.jwtPublicKey = jwtPublicKey;
   }
 }

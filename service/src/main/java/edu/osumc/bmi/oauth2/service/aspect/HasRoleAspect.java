@@ -8,6 +8,7 @@ import edu.osumc.bmi.oauth2.core.service.UserService;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -113,23 +115,22 @@ public class HasRoleAspect {
   private String parseUsernameFromJwtToken()
       throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
-    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-    //    CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-    PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(loadPEM("jwt.cert")));
-
     HttpServletRequest request =
-        ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     String header = request.getHeader(ServiceConstants.HTTP_HEADER_AUTHORIZATION);
     String token =
-        StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
-    Claims claims =
-        Jwts.parser()
-            //            .setSigningKey(
-            //
-            // properties.getAuthServer().getJwtSigningKey().getBytes(StandardCharsets.UTF_8))
-            .setSigningKey(publicKey)
-            .parseClaimsJws(token)
-            .getBody();
+            StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
+
+    JwtParser jwtParser = Jwts.parser();
+    if (properties.getAuthServer().isJwtPKIEnabled()) {
+      KeyFactory keyFactory = KeyFactory.getInstance(ServiceConstants.RSA_ALGORITHM);
+      PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(loadPEM(properties.getAuthServer().getJwtPublicKey())));
+      jwtParser.setSigningKey(publicKey);
+    } else {
+      jwtParser.setSigningKey(properties.getAuthServer().getJwtSigningKey().getBytes(StandardCharsets.UTF_8));
+    }
+
+    Claims claims = jwtParser.parseClaimsJws(token).getBody();
 
     return (String) claims.get(ServiceConstants.USER_NAME);
   }
