@@ -1,5 +1,9 @@
 package edu.osumc.bmi.oauth2.service.login;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.slf4j.Logger;
@@ -13,12 +17,41 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.util.Map;
+
 /** */
 public abstract class AbstractCallbackHandler implements CallbackHandler {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  protected ResponseEntity<String> requestOAuthTokens(ServiceProperties properties, String code) {
+  String parseAccessToken(ResponseEntity<String> response) {
+
+    // extract access_token from response
+    ObjectMapper mapper = new ObjectMapper();
+    Map<String, Object> responseMap = null;
+    try {
+      responseMap =
+          mapper.readValue(response.getBody(), new TypeReference<Map<String, Object>>() {});
+    } catch (JsonParseException e) {
+      logger.error(e.getMessage());
+      e.printStackTrace();
+    } catch (JsonMappingException e) {
+      logger.error(e.getMessage());
+      e.printStackTrace();
+    } catch (IOException e) {
+      logger.error(e.getMessage());
+      e.printStackTrace();
+    }
+
+    if (responseMap == null) {
+      return null;
+    }
+
+    return (String) responseMap.get(ServiceConstants.oauth2AccessToken);
+  }
+
+  ResponseEntity<String> requestOAuthTokens(ServiceProperties properties, String code) {
 
     // formulate request body
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

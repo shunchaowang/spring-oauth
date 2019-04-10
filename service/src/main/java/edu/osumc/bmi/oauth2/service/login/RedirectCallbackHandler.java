@@ -1,9 +1,5 @@
 package edu.osumc.bmi.oauth2.service.login;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.slf4j.Logger;
@@ -12,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
 public class RedirectCallbackHandler extends AbstractCallbackHandler {
@@ -36,30 +30,8 @@ public class RedirectCallbackHandler extends AbstractCallbackHandler {
 
               // make a post to OAuth2 Authorization Server to get the tokens
               ResponseEntity<String> response = requestOAuthTokens(properties, code);
-
               // extract access_token from response
-              ObjectMapper mapper = new ObjectMapper();
-              Map<String, Object> responseMap = null;
-              try {
-                responseMap =
-                    mapper.readValue(
-                        response.getBody(), new TypeReference<Map<String, Object>>() {});
-              } catch (JsonParseException e) {
-                logger.error(e.getMessage());
-                e.printStackTrace();
-              } catch (JsonMappingException e) {
-                logger.error(e.getMessage());
-                e.printStackTrace();
-              } catch (IOException e) {
-                logger.error(e.getMessage());
-                e.printStackTrace();
-              }
-
-              if (responseMap == null) {
-                return;
-              }
-
-              String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
+              String token = parseAccessToken(response);
               RedirectView redirectView = new RedirectView();
               redirectView.setUrl(
                   properties.getClient().getRedirectUri()
