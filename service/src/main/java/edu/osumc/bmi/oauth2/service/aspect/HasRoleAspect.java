@@ -116,18 +116,21 @@ public class HasRoleAspect {
       throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 
     HttpServletRequest request =
-            ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     String header = request.getHeader(ServiceConstants.HTTP_HEADER_AUTHORIZATION);
     String token =
-            StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
+        StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
 
     JwtParser jwtParser = Jwts.parser();
     if (properties.getAuthServer().isJwtPKIEnabled()) {
       KeyFactory keyFactory = KeyFactory.getInstance(ServiceConstants.RSA_ALGORITHM);
-      PublicKey publicKey = keyFactory.generatePublic(new X509EncodedKeySpec(loadPEM(properties.getAuthServer().getJwtPublicKey())));
+      PublicKey publicKey =
+          keyFactory.generatePublic(
+              new X509EncodedKeySpec(loadPEM(properties.getAuthServer().getJwtPublicKey())));
       jwtParser.setSigningKey(publicKey);
     } else {
-      jwtParser.setSigningKey(properties.getAuthServer().getJwtSigningKey().getBytes(StandardCharsets.UTF_8));
+      jwtParser.setSigningKey(
+          properties.getAuthServer().getJwtSigningKey().getBytes(StandardCharsets.UTF_8));
     }
 
     Claims claims = jwtParser.parseClaimsJws(token).getBody();

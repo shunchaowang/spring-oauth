@@ -18,56 +18,59 @@ import java.util.concurrent.ForkJoinPool;
 
 public class RedirectCallbackHandler extends AbstractCallbackHandler {
 
-    private ServiceProperties properties;
+  private ServiceProperties properties;
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public RedirectCallbackHandler(ServiceProperties properties) {
-        this.properties = properties;
-    }
+  public RedirectCallbackHandler(ServiceProperties properties) {
+    this.properties = properties;
+  }
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+  @Override
+  public DeferredResult<RedirectView> respond(String code) {
 
-    @Override
-    public DeferredResult<RedirectView> respond(String code) {
+    DeferredResult<RedirectView> result = new DeferredResult<>();
 
-        DeferredResult<RedirectView> result = new DeferredResult<>();
+    ForkJoinPool.commonPool()
+        .submit(
+            () -> {
 
-        ForkJoinPool.commonPool()
-                .submit(
-                        () -> {
+              // make a post to OAuth2 Authorization Server to get the tokens
+              ResponseEntity<String> response = requestOAuthTokens(properties, code);
 
-                            // make a post to OAuth2 Authorization Server to get the tokens
-                            ResponseEntity<String> response = requestOAuthTokens(properties, code);
+              // extract access_token from response
+              ObjectMapper mapper = new ObjectMapper();
+              Map<String, Object> responseMap = null;
+              try {
+                responseMap =
+                    mapper.readValue(
+                        response.getBody(), new TypeReference<Map<String, Object>>() {});
+              } catch (JsonParseException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              } catch (JsonMappingException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              } catch (IOException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              }
 
-                            // extract access_token from response
-                            ObjectMapper mapper = new ObjectMapper();
-                            Map<String, Object> responseMap = null;
-                            try {
-                                responseMap =
-                                        mapper.readValue(
-                                                response.getBody(), new TypeReference<Map<String, Object>>() {});
-                            } catch (JsonParseException e) {
-                                logger.error(e.getMessage());
-                                e.printStackTrace();
-                            } catch (JsonMappingException e) {
-                                logger.error(e.getMessage());
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                logger.error(e.getMessage());
-                                e.printStackTrace();
-                            }
+              if (responseMap == null) {
+                return;
+              }
 
-                            if (responseMap == null) {
-                                return;
-                            }
+              String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
+              RedirectView redirectView = new RedirectView();
+              redirectView.setUrl(
+                  properties.getClient().getRedirectUri()
+                      + "?"
+                      + ServiceConstants.tokenParamName
+                      + "="
+                      + token);
 
-                            String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
-                            RedirectView redirectView = new RedirectView();
-                            redirectView.setUrl(properties.getClient().getRedirectUri()
-                                            + "?" + ServiceConstants.tokenParamName + "=" + token);
+              result.setResult(redirectView);
+            });
 
-                            result.setResult(redirectView);
-                        });
-
-        return result;
-    }
+    return result;
+  }
 }

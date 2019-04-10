@@ -1,6 +1,5 @@
 package edu.osumc.bmi.oauth2.auth.client;
 
-import edu.osumc.bmi.oauth2.core.domain.Client;
 import edu.osumc.bmi.oauth2.core.domain.OAuthClientDetail;
 import edu.osumc.bmi.oauth2.core.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;

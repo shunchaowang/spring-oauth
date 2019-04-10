@@ -10,7 +10,6 @@ import edu.osumc.bmi.oauth2.service.web.DeferredResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.io.IOException;
@@ -19,53 +18,53 @@ import java.util.concurrent.ForkJoinPool;
 
 public class LocalCallbackHandler extends AbstractCallbackHandler {
 
-    private ServiceProperties properties;
+  private ServiceProperties properties;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public LocalCallbackHandler(ServiceProperties properties) {
-        this.properties = properties;
-    }
+  public LocalCallbackHandler(ServiceProperties properties) {
+    this.properties = properties;
+  }
 
-    @Override
-    public DeferredResult<ResponseEntity<?>> respond(String code) {
-        DeferredResult<ResponseEntity<?>> result = DeferredResultBuilder.INSTANCE.build();
+  @Override
+  public DeferredResult<ResponseEntity<?>> respond(String code) {
+    DeferredResult<ResponseEntity<?>> result = DeferredResultBuilder.INSTANCE.build();
 
-        ForkJoinPool.commonPool()
-                .submit(
-                        () -> {
+    ForkJoinPool.commonPool()
+        .submit(
+            () -> {
 
-                            // make a post to OAuth2 Authorization Server to get the tokens
-                            ResponseEntity<String> response = requestOAuthTokens(properties, code);
+              // make a post to OAuth2 Authorization Server to get the tokens
+              ResponseEntity<String> response = requestOAuthTokens(properties, code);
 
-                            // extract access_token from response
-                            ObjectMapper mapper = new ObjectMapper();
-                            Map<String, Object> responseMap = null;
-                            try {
-                                responseMap =
-                                        mapper.readValue(
-                                                response.getBody(), new TypeReference<Map<String, Object>>() {});
-                            } catch (JsonParseException e) {
-                                logger.error(e.getMessage());
-                                e.printStackTrace();
-                            } catch (JsonMappingException e) {
-                                logger.error(e.getMessage());
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                logger.error(e.getMessage());
-                                e.printStackTrace();
-                            }
+              // extract access_token from response
+              ObjectMapper mapper = new ObjectMapper();
+              Map<String, Object> responseMap = null;
+              try {
+                responseMap =
+                    mapper.readValue(
+                        response.getBody(), new TypeReference<Map<String, Object>>() {});
+              } catch (JsonParseException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              } catch (JsonMappingException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              } catch (IOException e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+              }
 
-                            if (responseMap == null) {
-                                return;
-                            }
+              if (responseMap == null) {
+                return;
+              }
 
-                            String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
-                            logger.debug("access token: " + token);
+              String token = (String) responseMap.get(ServiceConstants.oauth2AccessToken);
+              logger.debug("access token: " + token);
 
-                            result.setResult(response);
-                        });
+              result.setResult(response);
+            });
 
-        return result;
-    }
+    return result;
+  }
 }

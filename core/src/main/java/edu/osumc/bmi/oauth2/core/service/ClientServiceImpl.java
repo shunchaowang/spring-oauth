@@ -13,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientServiceImpl implements ClientService {
 
   @Autowired private ClientRepository clientRepository;
-  @Autowired
-  private OAuthClientDetailRepository oAuthClientDetailRepository;
+  @Autowired private OAuthClientDetailRepository oAuthClientDetailRepository;
 
   @Override
   public Client get(long id) {

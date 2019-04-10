@@ -11,16 +11,21 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(ServiceProperties.class)
 public class LoginHandlerConfig {
 
-    @Autowired
-    private ServiceProperties properties;
+  @Autowired private ServiceProperties properties;
 
-    @Bean
-    @ConditionalOnProperty(prefix = "bmi.oauth2.client", name = "redirect", havingValue = "false", matchIfMissing = true)
-    public CallbackHandler callbackHandler() {return new LocalCallbackHandler(properties);}
+  @Bean
+  @ConditionalOnProperty(
+      prefix = "bmi.oauth2.client",
+      name = "redirect",
+      havingValue = "false",
+      matchIfMissing = true)
+  public CallbackHandler callbackHandler() {
+    return new LocalCallbackHandler(properties);
+  }
 
-    @Bean
-    @ConditionalOnProperty(prefix = "bmi.oauth2.client", name = "redirect", havingValue = "true")
-    public CallbackHandler redirectCallbackHandler() {
-        return new RedirectCallbackHandler(properties);
-    }
+  @Bean
+  @ConditionalOnProperty(prefix = "bmi.oauth2.client", name = "redirect", havingValue = "true")
+  public CallbackHandler redirectCallbackHandler() {
+    return new RedirectCallbackHandler(properties);
+  }
 }

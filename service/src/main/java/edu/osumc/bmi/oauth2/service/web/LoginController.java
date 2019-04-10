@@ -3,7 +3,6 @@ package edu.osumc.bmi.oauth2.service.web;
 import edu.osumc.bmi.oauth2.core.aspect.Timed;
 import edu.osumc.bmi.oauth2.service.aspect.HasRole;
 import edu.osumc.bmi.oauth2.service.login.CallbackHandler;
-import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

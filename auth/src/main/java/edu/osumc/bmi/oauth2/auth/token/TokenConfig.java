@@ -47,10 +47,22 @@ public class TokenConfig {
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
       JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-//      converter.setSigningKey(properties.getToken().getJwtSigningKey());
-      KeyStoreKeyFactory keyStoreKeyFactory =
-              new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "wang22015".toCharArray());
-      converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
+
+      if (properties.getToken().isJwtPKIEnabled()) {
+        KeyStoreKeyFactory keyFactory =
+            new KeyStoreKeyFactory(
+                new ClassPathResource(properties.getToken().getJwtKeyStore()),
+                properties.getToken().getJwtKeyStorePass().toCharArray());
+        converter.setKeyPair(keyFactory.getKeyPair(properties.getToken().getJwtKeyAlias()));
+      } else {
+        converter.setSigningKey(properties.getToken().getJwtSigningKey());
+      }
+
+      //      converter.setSigningKey(properties.getToken().getJwtSigningKey());
+      //      KeyStoreKeyFactory keyStoreKeyFactory =
+      //              new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"),
+      // "wang22015".toCharArray());
+      //      converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
       return converter;
     }
 

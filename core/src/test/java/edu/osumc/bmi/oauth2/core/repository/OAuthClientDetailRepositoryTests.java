@@ -13,17 +13,16 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 public class OAuthClientDetailRepositoryTests {
 
-    @Autowired
-    private OAuthClientDetailRepository oAuthClientDetailRepository;
+  @Autowired private OAuthClientDetailRepository oAuthClientDetailRepository;
 
-    @Test
-    public void testFindByClientId() {
+  @Test
+  public void testFindByClientId() {
 
-        OAuthClientDetail clientDetail = new OAuthClientDetail();
-        clientDetail.setClientId("client-id");
-        OAuthClientDetail saved = oAuthClientDetailRepository.save(clientDetail);
-        assertThat(saved != null);
-        OAuthClientDetail found = oAuthClientDetailRepository.findByClientId("client-id");
-        assertThat(found.getClientId().equals("client-id"));
-    }
+    OAuthClientDetail clientDetail = new OAuthClientDetail();
+    clientDetail.setClientId("client-id");
+    OAuthClientDetail saved = oAuthClientDetailRepository.save(clientDetail);
+    assertThat(saved != null);
+    OAuthClientDetail found = oAuthClientDetailRepository.findByClientId("client-id");
+    assertThat(found.getClientId().equals("client-id"));
+  }
 }

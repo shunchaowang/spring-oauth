@@ -41,7 +41,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     clients.jdbc(dataSource);
 
     // for some reason this will not work :(
-//     clients.withClientDetails(clientDetailsService);
+    //     clients.withClientDetails(clientDetailsService);
   }
 
   @Override
