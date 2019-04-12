@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -56,7 +55,8 @@ public class LoginController {
   }
 
   @GetMapping("/api/me")
-  public DeferredResult<ResponseEntity<Map<String, String>>> profile(@RequestHeader HttpHeaders headers) {
+  public DeferredResult<ResponseEntity<Map<String, String>>> profile(
+      @RequestHeader HttpHeaders headers) {
 
     DeferredResult<ResponseEntity<Map<String, String>>> result = new DeferredResult<>();
     Map<String, String> info = new HashMap<>();
@@ -72,9 +72,11 @@ public class LoginController {
               User localUser = userService.get((String) user.get("name"));
               Set<Role> roles = localUser.getRoles();
               Set<String> localRoles = new HashSet<>();
-              roles.stream().forEach((role) -> {
-                localRoles.add(role.getName());
-              });
+              roles.stream()
+                  .forEach(
+                      (role) -> {
+                        localRoles.add(role.getName());
+                      });
               info.put("role", String.join(",", localRoles));
               result.setResult(ResponseEntity.status(HttpStatus.OK).body(info));
             });
