@@ -20,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,6 +38,7 @@ import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 
 @Controller
+@CrossOrigin
 public class LoginController {
 
   @Autowired ServiceProperties properties;
@@ -91,8 +94,7 @@ public class LoginController {
   }
 
   @PostMapping("/login")
-  public DeferredResult<ResponseEntity<String>> requestTokenByPasswordGrantType(
-      @RequestParam String username, @RequestParam String password) {
+  public DeferredResult<ResponseEntity<String>> requestTokenByPasswordGrantType(@RequestBody User user) {
 
     DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
 
@@ -108,8 +110,8 @@ public class LoginController {
               MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
               params.add(
                   ServiceConstants.oauth2GrantType, ServiceConstants.oauth2GrantTypePassword);
-              params.add(ServiceConstants.oauth2ParamUsername, username);
-              params.add(ServiceConstants.oauth2ParamPassword, password);
+              params.add(ServiceConstants.oauth2ParamUsername, user.getUsername());
+              params.add(ServiceConstants.oauth2ParamPassword, user.getPassword());
               // post to get the token using DeferredResult
               HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
