@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,6 +39,7 @@ public class LoginController {
   @Autowired ServiceProperties properties;
   @Autowired UserService userService;
 
+  //todo testing api, will remove when released
   @GetMapping("/api/hello")
   @ResponseBody
   @HasRole("ROLE_ADMIN")
@@ -82,6 +84,15 @@ public class LoginController {
             });
 
     return result;
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<Map> requestTokenByPasswordGrantType(@RequestParam String username, @RequestParam String password) {
+
+      // header
+      // body
+      // post to get the token using DeferredResult
+      return null;
   }
 
   // todo: tbd

@@ -119,7 +119,7 @@ public class HasRoleAspect {
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     String header = request.getHeader(ServiceConstants.HTTP_HEADER_AUTHORIZATION);
     String token =
-        StringUtils.substringAfter(header, ServiceConstants.HTTP_HEADER_AUTHORIZATION_BEARER + " ");
+        StringUtils.substringAfter(header, ServiceConstants.HTTP_AUTHORIZATION_BEARER + " ");
 
     JwtParser jwtParser = Jwts.parser();
     if (properties.getAuthServer().isJwtPKIEnabled()) {

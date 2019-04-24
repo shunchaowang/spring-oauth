@@ -8,6 +8,7 @@ public class AuthServerProperties {
   private String requestTokenUrl;
   private String principalUrl;
   private String redirectUri;
+  private String tokenUri;
   private boolean jwtEnabled = true;
   private String jwtSigningKey = "123456";
   private boolean jwtPKIEnabled = false;
@@ -27,6 +28,14 @@ public class AuthServerProperties {
 
   public void setPrincipalUrl(String principalUrl) {
     this.principalUrl = principalUrl;
+  }
+
+  public String getTokenUri() {
+    return tokenUri;
+  }
+
+  public void setTokenUri(String tokenUri) {
+    this.tokenUri = tokenUri;
   }
 
   public String getClientId() {

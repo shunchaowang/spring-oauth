@@ -55,7 +55,7 @@ public abstract class AbstractCallbackHandler implements CallbackHandler {
 
     // formulate request body
     MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-    params.add(ServiceConstants.oauth2GrantType, ServiceConstants.oauth2AuthorizationCode);
+    params.add(ServiceConstants.oauth2GrantType, ServiceConstants.oauth2GrantTypeAuthorizationCode);
     params.add(ServiceConstants.oauth2ClientId, properties.getAuthServer().getClientId());
     params.add(ServiceConstants.oauth2Code, code);
     params.add(ServiceConstants.oauth2RedirectUri, properties.getAuthServer().getRedirectUri());
