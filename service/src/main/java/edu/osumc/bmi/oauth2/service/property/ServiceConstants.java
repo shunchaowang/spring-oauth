@@ -19,4 +19,6 @@ public interface ServiceConstants {
   final String USER_NAME = "user_name";
   final String tokenParamName = "token";
   final String RSA_ALGORITHM = "RSA";
+  final String oauth2ParamUsername = "username";
+  final String oauth2ParamPassword = "password";
 }
