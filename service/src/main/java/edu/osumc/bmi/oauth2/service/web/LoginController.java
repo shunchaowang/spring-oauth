@@ -8,6 +8,7 @@ import edu.osumc.bmi.oauth2.service.aspect.HasRole;
 import edu.osumc.bmi.oauth2.service.login.CallbackHandler;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
+import edu.osumc.bmi.oauth2.service.web.command.LoginForm;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +95,7 @@ public class LoginController {
   }
 
   @PostMapping("/login")
-  public DeferredResult<ResponseEntity<String>> requestTokenByPasswordGrantType(@RequestBody User user) {
+  public DeferredResult<ResponseEntity<String>> requestTokenByPasswordGrantType(@RequestBody LoginForm user) {
 
     DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
 

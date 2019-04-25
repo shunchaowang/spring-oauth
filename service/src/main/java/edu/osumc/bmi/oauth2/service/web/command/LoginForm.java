@@ -1,6 +1,6 @@
-package edu.osumc.bmi.oauth2.service.web.vo;
+package edu.osumc.bmi.oauth2.service.web.command;
 
-public class User {
+public class LoginForm {
 
   private String username;
   private String password;
