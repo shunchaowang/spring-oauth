@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableResourceServer
@@ -36,5 +38,19 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     http.anonymous().disable().authorizeRequests().antMatchers("/api/**").authenticated();
   }
 
-
+  @Bean
+  public WebMvcConfigurer webMvcConfigurer() {
+    return new WebMvcConfigurer() {
+      /**
+       * Configure cross origin requests processing.
+       *
+       * @param registry
+       * @since 4.2
+       */
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**");
+      }
+    };
+  }
 }

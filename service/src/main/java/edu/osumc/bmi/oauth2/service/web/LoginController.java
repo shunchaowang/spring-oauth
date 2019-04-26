@@ -9,10 +9,12 @@ import edu.osumc.bmi.oauth2.service.login.CallbackHandler;
 import edu.osumc.bmi.oauth2.service.property.ServiceConstants;
 import edu.osumc.bmi.oauth2.service.property.ServiceProperties;
 import edu.osumc.bmi.oauth2.service.web.command.LoginForm;
+import edu.osumc.bmi.oauth2.service.web.helper.RestTemplateResponseErrorHandler;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,13 +40,14 @@ import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 
 @Controller
-@CrossOrigin
 public class LoginController {
 
   @Autowired ServiceProperties properties;
   @Autowired UserService userService;
-  private Logger logger = LoggerFactory.getLogger(getClass());
   @Autowired private CallbackHandler callbackHandler;
+  @Autowired private RestTemplateBuilder restTemplateBuilder;
+  @Autowired private RestTemplateResponseErrorHandler errorHandler;
+  private Logger logger = LoggerFactory.getLogger(getClass());
 
   // todo testing api, will remove when released
   @GetMapping("/api/hello")
@@ -95,40 +97,32 @@ public class LoginController {
   }
 
   @PostMapping("/login")
-  public DeferredResult<ResponseEntity<String>> requestTokenByPasswordGrantType(@RequestBody LoginForm user) {
+  public ResponseEntity<String> requestTokenByPasswordGrantType(@RequestBody LoginForm user) {
 
-    DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
+    // header
+    HttpHeaders headers =
+        basicAuthHeaders(
+            properties.getAuthServer().getClientId(), properties.getAuthServer().getClientSecret());
+    // body
+    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add(ServiceConstants.oauth2GrantType, ServiceConstants.oauth2GrantTypePassword);
+    params.add(ServiceConstants.oauth2ParamUsername, user.getUsername());
+    params.add(ServiceConstants.oauth2ParamPassword, user.getPassword());
+    // post to get the token using DeferredResult
+    HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-    ForkJoinPool.commonPool()
-        .submit(
-            () -> {
-              // header
-              HttpHeaders headers =
-                  basicAuthHeaders(
-                      properties.getAuthServer().getClientId(),
-                      properties.getAuthServer().getClientSecret());
-              // body
-              MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-              params.add(
-                  ServiceConstants.oauth2GrantType, ServiceConstants.oauth2GrantTypePassword);
-              params.add(ServiceConstants.oauth2ParamUsername, user.getUsername());
-              params.add(ServiceConstants.oauth2ParamPassword, user.getPassword());
-              // post to get the token using DeferredResult
-              HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+    RestTemplate restTemplate = restTemplateBuilder.errorHandler(errorHandler).build();
 
-              RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> response =
+        restTemplate.exchange(
+            properties.getAuthServer().getRequestTokenUrl(),
+            HttpMethod.POST,
+            request,
+            String.class);
 
-              ResponseEntity<String> responseEntity =
-                  restTemplate.exchange(
-                      properties.getAuthServer().getRequestTokenUrl(),
-                      HttpMethod.POST,
-                      request,
-                      String.class);
+    if (response.getStatusCode().is2xxSuccessful()) return response;
 
-              result.setResult(responseEntity);
-            });
-
-    return result;
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad Credential.");
   }
 
   private HttpHeaders basicAuthHeaders(String username, String password) {
