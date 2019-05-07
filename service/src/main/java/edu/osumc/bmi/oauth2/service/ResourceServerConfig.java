@@ -35,14 +35,20 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
   @Override
   public void configure(HttpSecurity http) throws Exception {
-    http.anonymous().disable().authorizeRequests().antMatchers("/api/**").authenticated();
+    // cors needs to be enabled here, this HttpSecurity overrides global CorsRegistry.
+    // /api/** should also allow cross origin request.
+    http
+            .cors()
+            .and()
+            .anonymous().disable()
+            .authorizeRequests().antMatchers("/api/**").authenticated();
   }
 
   @Bean
   public WebMvcConfigurer webMvcConfigurer() {
     return new WebMvcConfigurer() {
       /**
-       * Configure cross origin requests processing.
+       * Configure cross origin requests processing. Enable cors support globally.
        *
        * @param registry
        * @since 4.2
