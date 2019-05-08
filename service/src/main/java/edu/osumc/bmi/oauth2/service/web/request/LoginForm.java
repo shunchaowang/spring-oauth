@@ -1,4 +1,4 @@
-package edu.osumc.bmi.oauth2.service.web.command;
+package edu.osumc.bmi.oauth2.service.web.request;
 
 public class LoginForm {
 
