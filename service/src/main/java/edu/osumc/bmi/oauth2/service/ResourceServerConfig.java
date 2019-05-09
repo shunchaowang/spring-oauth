@@ -37,11 +37,13 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
   public void configure(HttpSecurity http) throws Exception {
     // cors needs to be enabled here, this HttpSecurity overrides global CorsRegistry.
     // /api/** should also allow cross origin request.
-    http
-            .cors()
-            .and()
-            .anonymous().disable()
-            .authorizeRequests().antMatchers("/api/**").authenticated();
+    http.cors()
+        .and()
+        .anonymous()
+        .disable()
+        .authorizeRequests()
+        .antMatchers("/api/**")
+        .authenticated();
   }
 
   @Bean
