@@ -3,6 +3,7 @@ package edu.osumc.bmi.oauth2.core.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -13,14 +14,22 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users_clients")
+@IdClass(UserClientId.class)
 public class UserClient implements Serializable {
 
   @Id
+  @Column(name = "user_id", insertable = false, updatable = false)
+  private long userId;
+
+  @Id
+  @Column(name = "client_id", insertable = false, updatable = false)
+  private long clientId;
+
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private User user;
 
-  @Id
+
   @ManyToOne
   @JoinColumn(name = "client_id", referencedColumnName = "id")
   private Client client;
@@ -41,6 +50,22 @@ public class UserClient implements Serializable {
     this.user = user;
     this.client = client;
     this.owner = owner;
+  }
+
+  public long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
+
+  public long getClientId() {
+    return clientId;
+  }
+
+  public void setClientId(long clientId) {
+    this.clientId = clientId;
   }
 
   public User getUser() {
