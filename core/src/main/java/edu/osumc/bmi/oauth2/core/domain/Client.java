@@ -3,6 +3,7 @@ package edu.osumc.bmi.oauth2.core.domain;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -34,7 +35,7 @@ public class Client implements Serializable {
   @OneToMany(mappedBy = "client")
   private Set<Role> roles;
 
-  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private Set<UserClient> userClients;
 
   public Client() {
