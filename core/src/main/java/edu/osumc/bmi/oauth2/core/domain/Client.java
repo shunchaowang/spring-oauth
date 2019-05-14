@@ -38,12 +38,12 @@ public class Client implements Serializable {
   private Set<UserClient> userClients;
 
   public Client() {
-
     roles = new HashSet<>();
     userClients = new HashSet<>();
   }
 
   public Client(User owner) {
+    roles = new HashSet<>();
     userClients = new HashSet<>();
     UserClient userClient = new UserClient(owner, this, true);
     userClients.add(userClient);

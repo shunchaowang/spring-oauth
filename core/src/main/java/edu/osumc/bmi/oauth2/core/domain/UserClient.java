@@ -18,18 +18,11 @@ import java.util.Objects;
 public class UserClient implements Serializable {
 
   @Id
-  @Column(name = "user_id", insertable = false, updatable = false)
-  private long userId;
-
-  @Id
-  @Column(name = "client_id", insertable = false, updatable = false)
-  private long clientId;
-
   @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private User user;
 
-
+  @Id
   @ManyToOne
   @JoinColumn(name = "client_id", referencedColumnName = "id")
   private Client client;
@@ -52,44 +45,16 @@ public class UserClient implements Serializable {
     this.owner = owner;
   }
 
-  public long getUserId() {
-    return userId;
-  }
-
-  public void setUserId(long userId) {
-    this.userId = userId;
-  }
-
-  public long getClientId() {
-    return clientId;
-  }
-
-  public void setClientId(long clientId) {
-    this.clientId = clientId;
-  }
-
   public User getUser() {
     return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
   }
 
   public Client getClient() {
     return client;
   }
 
-  public void setClient(Client client) {
-    this.client = client;
-  }
-
   public boolean isOwner() {
     return owner;
-  }
-
-  public void setOwner(boolean owner) {
-    this.owner = owner;
   }
 
   /**

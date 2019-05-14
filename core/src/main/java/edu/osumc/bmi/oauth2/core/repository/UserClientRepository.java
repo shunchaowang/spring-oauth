@@ -11,11 +11,15 @@ import java.util.List;
 @Repository
 public interface UserClientRepository extends JpaRepository<UserClient, Long> {
 
-    List<UserClient> findByUser(User user);
-    List<UserClient> findByUserUsername(String user);
-    List<UserClient> findByClient(Client client);
-    List<UserClient> findByClientName(String client);
+  List<UserClient> findByUser(User user);
 
-    UserClient findByUserAndClient(User user, Client client);
-    UserClient findByUserUsernameAndClientName(String user, String client);
+  List<UserClient> findByUserUsername(String user);
+
+  List<UserClient> findByClient(Client client);
+
+  List<UserClient> findByClientName(String client);
+
+  UserClient findByUserAndClient(User user, Client client);
+
+  UserClient findByUserUsernameAndClientName(String user, String client);
 }
