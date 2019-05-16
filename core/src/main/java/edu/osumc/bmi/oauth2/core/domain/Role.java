@@ -3,6 +3,7 @@ package edu.osumc.bmi.oauth2.core.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,7 +16,9 @@ import java.util.Objects;
 @Table(name = "roles")
 public class Role implements Serializable {
 
-  @Id @GeneratedValue private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
   @Column(nullable = false, unique = true)
   private String name;

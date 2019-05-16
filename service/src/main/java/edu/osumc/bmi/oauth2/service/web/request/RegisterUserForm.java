@@ -1,5 +1,6 @@
 package edu.osumc.bmi.oauth2.service.web.request;
 
+import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.service.web.validation.FieldMatchConstraint;
 
 import javax.validation.constraints.NotNull;
@@ -42,5 +43,12 @@ public class RegisterUserForm {
 
   public void setConfirmedPassword(String confirmedPassword) {
     this.confirmedPassword = confirmedPassword;
+  }
+
+  public User user() {
+    User user = new User();
+    user.setUsername(this.username);
+    user.setPassword(this.password);
+    return user;
   }
 }

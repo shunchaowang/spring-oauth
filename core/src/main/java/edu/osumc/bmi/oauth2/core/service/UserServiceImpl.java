@@ -27,17 +27,20 @@ public class UserServiceImpl implements UserService {
   public User createOAuth2Admin(User user) {
 
     Role role = roleRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID);
-    Client client = clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID);
-
-    // user.getClients().add(client);
-    // todo: create user client association
     user.getRoles().add(role);
+    Client client = clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID);
+    client.addUser(user);
+
     return userRepository.save(user);
   }
 
   @Override
   public User registerOAuth2User(User user) {
-    return null;
+    Role role = roleRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID);
+    user.getRoles().add(role);
+    Client client = clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID);
+    client.addUser(user);
+    return userRepository.save(user);
   }
 
   @Override
