@@ -6,6 +6,7 @@ import edu.osumc.bmi.oauth2.service.web.request.RegisterUserForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,22 +25,33 @@ public class UserController {
 
   @PostMapping("/register")
   public DeferredResult<ResponseEntity<String>> registerUser(
-      @Valid @RequestBody RegisterUserForm user, BindingResult bindingResult) {
+      @Valid @RequestBody RegisterUserForm userForm, BindingResult bindingResult) {
     DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
     if (bindingResult.hasErrors()) {
       result.setResult(ResponseEntity.badRequest().body("Bad Request"));
       return result;
     }
 
+    if (usernameExists(userForm.getUsername())) {
+        result.setResult(ResponseEntity.status(HttpStatus.CONFLICT).body(userForm.getUsername() + " already exists."));
+        return result;
+    }
+
     ForkJoinPool.commonPool()
         .submit(
             () -> {
-              User domainUser = user.user();
-              domainUser = userService.registerOAuth2User(domainUser);
+              User user = userForm.user();
+              user = userService.registerOAuth2User(user);
               result.setResult(
-                  ResponseEntity.ok().body(domainUser.getUsername() + " Registered Successfully"));
+                  ResponseEntity.status(HttpStatus.CREATED)
+                      .body(user.getUsername() + " registered Successfully."));
             });
 
     return result;
+  }
+
+  private boolean usernameExists(String username) {
+    if (userService.get(username) != null) return true;
+    return false;
   }
 }
