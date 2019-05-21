@@ -1,6 +1,7 @@
 package edu.osumc.bmi.oauth2.auth;
 
 import edu.osumc.bmi.oauth2.auth.client.AuthClientDetailsService;
+import edu.osumc.bmi.oauth2.auth.user.AuthUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   @Autowired private AuthClientDetailsService clientDetailsService;
 
   @Autowired private AuthenticationManager authenticationManager;
+  @Autowired private AuthUserDetailsService userDetailsService;
 
   @Autowired private DataSource dataSource;
 
@@ -48,7 +50,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
   public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 
     // AuthenticationManager is needed for password grant type
-    endpoints.tokenStore(tokenStore).authenticationManager(authenticationManager);
+    endpoints
+        .tokenStore(tokenStore)
+        .userDetailsService(userDetailsService) // this is needed for refresh token
+        .authenticationManager(authenticationManager); // this is needed for password mode
 
     if (jwtAccessTokenConverter != null) {
       TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
