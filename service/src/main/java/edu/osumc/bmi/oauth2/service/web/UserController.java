@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ public class UserController {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
   @Autowired private UserService userService;
+  @Autowired private PasswordEncoder passwordEncoder;
 
   @PostMapping("/register")
   public DeferredResult<ResponseEntity<String>> registerUser(
@@ -33,14 +35,17 @@ public class UserController {
     }
 
     if (usernameExists(userForm.getUsername())) {
-        result.setResult(ResponseEntity.status(HttpStatus.CONFLICT).body(userForm.getUsername() + " already exists."));
-        return result;
+      result.setResult(
+          ResponseEntity.status(HttpStatus.CONFLICT)
+              .body(userForm.getUsername() + " already exists."));
+      return result;
     }
 
     ForkJoinPool.commonPool()
         .submit(
             () -> {
               User user = userForm.user();
+              user.setPassword(passwordEncoder.encode(user.getPassword()));
               user = userService.registerOAuth2User(user);
               result.setResult(
                   ResponseEntity.status(HttpStatus.CREATED)
@@ -51,7 +56,6 @@ public class UserController {
   }
 
   private boolean usernameExists(String username) {
-    if (userService.get(username) != null) return true;
-    return false;
+    return userService.get(username) != null;
   }
 }

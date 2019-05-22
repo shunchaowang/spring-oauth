@@ -35,16 +35,14 @@ public class UserServiceTests {
     when(clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID)).thenReturn(new Client());
 
     User user = User.builder.username("john").password("john").active(true).build();
-
     user = userService.createOAuth2Admin(user);
 
     assertThat(user != null);
   }
 
-
   @Test
   public void testRegisterOAuth2User() {
-// mock role
+    // mock role
     when(roleRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID)).thenReturn(new Role());
 
     // mock client

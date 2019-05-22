@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     user.getRoles().add(role);
     Client client = clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID);
     client.addUser(user);
-
+    user.setActive(true);
     return userRepository.save(user);
   }
 
@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
     user.getRoles().add(role);
     Client client = clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID);
     client.addUser(user);
+    user.setActive(true);
     return userRepository.save(user);
   }
 
