@@ -68,7 +68,7 @@ public class LoginController {
     return result;
   }
 
-  @GetMapping("/login")
+//  @GetMapping("/login")
   public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
 
     SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
@@ -84,7 +84,7 @@ public class LoginController {
     return mv;
   }
 
-  @PostMapping("/login")
+//  @PostMapping("/login")
   public String performLogin(HttpServletRequest request, HttpServletResponse response) {
 
     SavedRequest savedRequest = (new HttpSessionRequestCache().getRequest(request, response));

@@ -2,6 +2,7 @@ package edu.osumc.bmi.oauth2.service.web;
 
 import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.service.UserService;
+import edu.osumc.bmi.oauth2.service.web.request.ChangePasswordForm;
 import edu.osumc.bmi.oauth2.service.web.request.RegisterUserForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,18 @@ public class UserController {
             });
 
     return result;
+  }
+
+  @PostMapping("/api/change-password")
+  public DeferredResult<ResponseEntity<String>> changePassword(
+          @Valid @RequestBody ChangePasswordForm passwordForm, BindingResult bindingResult) {
+
+      DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
+      if (bindingResult.hasErrors()) {
+          result.setResult(ResponseEntity.badRequest().body("Bad Request"));
+          return result;
+      }
+      return null;
   }
 
   private boolean usernameExists(String username) {
