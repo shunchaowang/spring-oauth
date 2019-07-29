@@ -32,19 +32,19 @@ public class LoginController {
 
   // todo: tbd
   // my testing apis, delete when released
-  @GetMapping("/user/me")
-  @ResponseBody
-  public Object getPrincipal(Authentication principal) {
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      logger.info(objectMapper.writeValueAsString(principal));
-    } catch (JsonProcessingException e) {
-      logger.error(e.getMessage());
-      e.printStackTrace();
-    }
-    return principal;
-  }
+//  @GetMapping("/user/me")
+//  @ResponseBody
+//  public Object getPrincipal(Authentication principal) {
+//
+//    ObjectMapper objectMapper = new ObjectMapper();
+//    try {
+//      logger.info(objectMapper.writeValueAsString(principal));
+//    } catch (JsonProcessingException e) {
+//      logger.error(e.getMessage());
+//      e.printStackTrace();
+//    }
+//    return principal;
+//  }
 
   /**
    * The Api to be called by resource servers to retrieve user's info
