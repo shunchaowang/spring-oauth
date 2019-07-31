@@ -2,8 +2,10 @@ package edu.osumc.bmi.oauth2.service.web;
 
 import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.service.UserService;
+import edu.osumc.bmi.oauth2.service.util.RequestUtils;
 import edu.osumc.bmi.oauth2.service.web.request.ChangePasswordForm;
 import edu.osumc.bmi.oauth2.service.web.request.RegisterUserForm;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ public class UserController {
   private Logger logger = LoggerFactory.getLogger(getClass());
   @Autowired private UserService userService;
   @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired private RequestUtils requestUtils;
 
   @PostMapping("/register")
   public DeferredResult<ResponseEntity<String>> registerUser(
@@ -35,7 +38,7 @@ public class UserController {
       return result;
     }
 
-    if (usernameExists(userForm.getUsername())) {
+    if (userService.get(userForm.getUsername()) != null) {
       result.setResult(
           ResponseEntity.status(HttpStatus.CONFLICT)
               .body(userForm.getUsername() + " already exists."));
@@ -65,10 +68,34 @@ public class UserController {
           result.setResult(ResponseEntity.badRequest().body("Bad Request"));
           return result;
       }
-      return null;
+
+      String username = requestUtils.retrieveRequestUser();
+      if (StringUtils.isEmpty(username)) {
+          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username does not exist"));
+          return result;
+      }
+
+      User user = userService.get(username);
+      if (user == null) {
+          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not exist"));
+      }
+
+      if (!passwordEncoder.matches(passwordForm.getCurrentPassword(), user.getPassword())) {
+          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Current password does not match"));
+          return result;
+      }
+
+      if (passwordEncoder.matches(passwordForm.getPassword(), user.getPassword())) {
+          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Password cannot be the same with " +
+                  "existing one"));
+          return result;
+      }
+
+      user.setPassword(passwordForm.getPassword());
+      userService.update(user);
+      result.setResult(ResponseEntity.status(HttpStatus.OK).body(username + " has successfully changed password"));
+
+      return result;
   }
 
-  private boolean usernameExists(String username) {
-    return userService.get(username) != null;
-  }
 }
