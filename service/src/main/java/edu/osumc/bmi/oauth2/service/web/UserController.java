@@ -87,7 +87,7 @@ public class UserController {
 
       if (passwordEncoder.matches(passwordForm.getPassword(), user.getPassword())) {
           result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Password cannot be the same with " +
-                  "existing one"));
+                  "current one"));
           return result;
       }
 

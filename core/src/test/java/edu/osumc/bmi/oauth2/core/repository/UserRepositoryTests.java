@@ -26,6 +26,6 @@ public class UserRepositoryTests {
     user = userRepository.save(user);
     User found = userRepository.getOne(user.getId());
 
-    assertThat(found.getUsername().equals("tom"));
+    assertThat(found.getUsername()).isEqualTo("tom");
   }
 }

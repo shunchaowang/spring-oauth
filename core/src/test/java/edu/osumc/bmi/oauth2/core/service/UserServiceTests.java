@@ -10,6 +10,7 @@ import edu.osumc.bmi.oauth2.core.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
@@ -19,12 +20,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
+@DataJpaTest
 public class UserServiceTests {
 
   @Autowired private UserService userService;
   @MockBean private ClientRepository clientRepository;
   @MockBean private RoleRepository roleRepository;
-  @MockBean private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @Test
   public void testCreateOAuth2Admin() {
@@ -37,7 +39,7 @@ public class UserServiceTests {
     User user = User.builder.username("john").password("john").active(true).build();
     user = userService.createOAuth2Admin(user);
 
-    assertThat(user != null);
+    assertThat(user).isNotNull();
   }
 
   @Test
@@ -52,9 +54,15 @@ public class UserServiceTests {
 
     user = userService.registerOAuth2User(user);
 
-    assertThat(user != null);
+    assertThat(user).isNotNull();
   }
 
+  /**
+   * TestConfiguration can be used to set up the context for the test, like bean injection.
+   * But the dependencies of the injected beans need to be marked as MockBean from class level
+   * to satisfy spring bean factory;
+   * Another way is to mark all beans needed by test to be MockBean.
+   */
   @TestConfiguration
   static class UserServiceTestsContextConfiguration {
     @Bean
