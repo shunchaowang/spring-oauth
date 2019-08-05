@@ -70,24 +70,28 @@ public class UserController {
       }
 
       String username = requestUtils.retrieveRequestUser();
+      logger.info(username + " is changing the password.");
       if (StringUtils.isEmpty(username)) {
-          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username does not exist"));
+          result.setResult(ResponseEntity.status(401).body("Username does not exist"));
+          logger.info("Cannot find username from the request.");
           return result;
       }
 
       User user = userService.get(username);
       if (user == null) {
-          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not exist"));
+          logger.info("Cannot find " + username);
+          result.setResult(ResponseEntity.status(401).body("User does not exist"));
+          return result;
       }
 
       if (!passwordEncoder.matches(passwordForm.getCurrentPassword(), user.getPassword())) {
+          logger.info("Current password does not match.");
           result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Current password does not match"));
           return result;
       }
 
       if (passwordEncoder.matches(passwordForm.getPassword(), user.getPassword())) {
-          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Password cannot be the same with " +
-                  "current one"));
+          result.setResult(ResponseEntity.status(406).body("Password cannot be the same with current one"));
           return result;
       }
 
