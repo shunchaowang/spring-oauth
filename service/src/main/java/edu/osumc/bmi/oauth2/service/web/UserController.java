@@ -95,7 +95,7 @@ public class UserController {
           return result;
       }
 
-      user.setPassword(passwordForm.getPassword());
+      user.setPassword(passwordEncoder.encode(passwordForm.getPassword()));
       userService.update(user);
       result.setResult(ResponseEntity.status(HttpStatus.OK).body(username + " has successfully changed password"));
 
