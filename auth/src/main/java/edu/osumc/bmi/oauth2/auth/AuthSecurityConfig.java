@@ -33,8 +33,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // if want to use custom login page for login
-    // http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login")
-    // .loginProcessingUrl("/login").permitAll();
+     http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login")
+     .loginProcessingUrl("/login").permitAll();
     http.authorizeRequests().anyRequest().authenticated().and().formLogin();
   }
 
@@ -47,8 +47,9 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    * AuthenticationManager} as a Bean. The {@link #userDetailsServiceBean()} can be used to expose
    * the last populated {@link UserDetailsService} that is created with the {@link
    * AuthenticationManagerBuilder} as a Bean. The {@link UserDetailsService} will also automatically
-   * be populated on {@link HttpSecurity#getSharedObject(Class)} for use with other {@link
-   * SecurityContextConfigurer} (i.e. RememberMeConfigurer )
+   * be populated on {@link HttpSecurity#getSharedObject(Class)} for use with other
+   * {@link SecurityContextConfigurer}
+   * (i.e. RememberMeConfigurer )
    *
    * <p>For example, the following configuration could be used to register in memory authentication
    * that exposes an in memory {@link UserDetailsService}:
