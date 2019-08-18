@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -77,17 +78,46 @@ public class LoginController {
       return null;
     }
 
-    Map<String, String[]> map0 = savedRequest.getParameterMap();
-    String clientId = map0.get(AuthConstants.CLIENT_ID_PARAM_NAME)[0];
+    // store client_id in the session
+//    HttpSession session = request.getSession();
+    // only parse parameter when session doesn't contain client_id
+    String clientId = "";
+    Map<String, String[]> params = savedRequest.getParameterMap();
+    if (params.get(AuthConstants.CLIENT_ID_PARAM_NAME) != null) {
+      clientId = params.get(AuthConstants.CLIENT_ID_PARAM_NAME)[0];
+    }
+
+//    if (session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME) == null) {
+//      if (map0.get(AuthConstants.CLIENT_ID_PARAM_NAME) != null) {
+//        session.setAttribute(AuthConstants.CLIENT_ID_PARAM_NAME, map0.get(AuthConstants.CLIENT_ID_PARAM_NAME)[0]);
+//      }
+//    }
+//    String clientId = (String) session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME);
+//    logger.info("client_id: " + session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME));
+//
+//    // redirect_uri also needs to be stored in the session
+//    if (session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME) == null) {
+//      if (map0.get(AuthConstants.REDIRECT_URI_PARAM_NAME) != null) {
+//        session.setAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME, map0.get(AuthConstants.REDIRECT_URI_PARAM_NAME)[0]);
+//      }
+//    }
+
+//    logger.info("redirect_uri: " + session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME));
+
     ModelAndView mv = new ModelAndView("login");
     mv.addObject(AuthConstants.CLIENT_ID_PARAM_NAME, clientId);
     return mv;
   }
 
-  @PostMapping("/login")
+//  @PostMapping("/login")
   public String performLogin(HttpServletRequest request, HttpServletResponse response) {
 
-    SavedRequest savedRequest = (new HttpSessionRequestCache().getRequest(request, response));
+//    HttpSession session = request.getSession();
+//    logger.info("post client_id: " + session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME));
+//    logger.info("post redirect_uri: " + session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME));
+
+    logger.info("in performLogin");
+    SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
     if (savedRequest == null) {
       // todo: error handling
       return null;
@@ -114,5 +144,9 @@ public class LoginController {
       e.printStackTrace();
     }
     return "redirect:" + savedRequest.getRedirectUrl();
+//    String redirectUri = (String) session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME);
+//    session.removeAttribute(AuthConstants.CLIENT_ID_PARAM_NAME);
+//    session.removeAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME);
+//    return "redirect: " + redirectUri;
   }
 }

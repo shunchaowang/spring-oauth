@@ -8,4 +8,5 @@ public interface AuthConstants {
   String DB_PASSWORD_KEY = "password";
 
   String CLIENT_ID_PARAM_NAME = "client_id";
+  String REDIRECT_URI_PARAM_NAME = "redirect_uri";
 }

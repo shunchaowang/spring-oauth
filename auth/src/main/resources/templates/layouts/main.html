@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">BMI OAuth</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="../../static/vendors/bootstrap/css/bootstrap.css"
+          th:href="@{/vendors/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/app.css" th:href="@{/css/app.css}"/>
+</head>
+
+<body class="container">
+<div th:replace="fragments/header :: header">
+    Header content will be replaced here.
+</div>
+
+<div layout:fragment="content">
+    <h1>This is the Layout's main section</h1>
+    <p>This is the main content placeholder. This content will be replaced if the page
+        using the layout also defines a layout:fragment="content" segment. </p>
+</div>
+
+<footer th:insert="fragments/footer :: footer" class="footer">
+    This content will remain, but other content will be inserted after it.
+</footer>
+
+<script src="../../static/vendors/bootstrap/js/bootstrap.js"
+        th:src="@{/vendors/bootstrap/js/bootstrap.min.js}"></script>
+
+<script src="../../static/js/app.js" th:src="@{/js/app.js}"></script>
+
+<th:block layout:fragment="scripts"></th:block>
+</body>
+</html>

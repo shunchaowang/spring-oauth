@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,12 +34,30 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // if want to use custom login page for login
-     http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login")
-     .loginProcessingUrl("/login").permitAll();
+    http.authorizeRequests()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .formLogin()
+        .loginPage("/login")
+//        .loginProcessingUrl("/login")
+        .permitAll();
     http.authorizeRequests().anyRequest().authenticated().and().formLogin();
   }
 
-  /**
+    /**
+     * Override this method to configure {@link WebSecurity}. For example, if you wish to
+     * ignore certain requests.
+     *
+     * @param web
+     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**");
+    }
+
+    /**
    * Used by the default implementation of {@link #authenticationManager()} to attempt to obtain an
    * {@link AuthenticationManager}. If overridden, the {@link AuthenticationManagerBuilder} should
    * be used to specify the {@link AuthenticationManager}.
@@ -47,9 +66,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    * AuthenticationManager} as a Bean. The {@link #userDetailsServiceBean()} can be used to expose
    * the last populated {@link UserDetailsService} that is created with the {@link
    * AuthenticationManagerBuilder} as a Bean. The {@link UserDetailsService} will also automatically
-   * be populated on {@link HttpSecurity#getSharedObject(Class)} for use with other
-   * {@link SecurityContextConfigurer}
-   * (i.e. RememberMeConfigurer )
+   * be populated on {@link HttpSecurity#getSharedObject(Class)} for use with other {@link
+   * *SecurityContextConfigurer} (i.e. RememberMeConfigurer )
    *
    * <p>For example, the following configuration could be used to register in memory authentication
    * that exposes an in memory {@link UserDetailsService}:
