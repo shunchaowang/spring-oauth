@@ -9,4 +9,5 @@ public interface AuthConstants {
 
   String CLIENT_ID_PARAM_NAME = "client_id";
   String REDIRECT_URI_PARAM_NAME = "redirect_uri";
+  String REGISTER_URL = "registerUrl";
 }

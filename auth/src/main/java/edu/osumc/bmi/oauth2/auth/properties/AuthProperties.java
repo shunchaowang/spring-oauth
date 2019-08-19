@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AuthProperties {
 
   private TokenProperties token = new TokenProperties();
+  private String registerUrl;
 
   public TokenProperties getToken() {
     return token;
@@ -13,5 +14,13 @@ public class AuthProperties {
 
   public void setToken(TokenProperties token) {
     this.token = token;
+  }
+
+  public String getRegisterUrl() {
+    return registerUrl;
+  }
+
+  public void setRegisterUrl(String registerUrl) {
+    this.registerUrl = registerUrl;
   }
 }

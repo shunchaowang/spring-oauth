@@ -3,9 +3,11 @@ package edu.osumc.bmi.oauth2.auth.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
+import edu.osumc.bmi.oauth2.auth.properties.AuthProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -30,6 +32,8 @@ import java.util.concurrent.ForkJoinPool;
 public class LoginController {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
+  @Autowired
+  private AuthProperties properties;
 
   // todo: tbd
   // my testing apis, delete when released
@@ -106,6 +110,7 @@ public class LoginController {
 
     ModelAndView mv = new ModelAndView("login");
     mv.addObject(AuthConstants.CLIENT_ID_PARAM_NAME, clientId);
+    mv.addObject(AuthConstants.REGISTER_URL, properties.getRegisterUrl());
     return mv;
   }
 
