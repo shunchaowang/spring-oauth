@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AuthProperties {
 
   private TokenProperties token = new TokenProperties();
-  private String registerUrl;
+  private String registerUrl = "http://localhost:8000/register";
 
   public TokenProperties getToken() {
     return token;
