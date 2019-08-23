@@ -7,6 +7,7 @@ public class AuthProperties {
 
   private TokenProperties token = new TokenProperties();
   private String registerUrl = "http://localhost:8000/register";
+  private String logoutSuccessUrl;
 
   public TokenProperties getToken() {
     return token;
@@ -22,5 +23,13 @@ public class AuthProperties {
 
   public void setRegisterUrl(String registerUrl) {
     this.registerUrl = registerUrl;
+  }
+
+  public String getLogoutSuccessUrl() {
+    return logoutSuccessUrl;
+  }
+
+  public void setLogoutSuccessUrl(String logoutSuccessUrl) {
+    this.logoutSuccessUrl = logoutSuccessUrl;
   }
 }

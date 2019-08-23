@@ -154,4 +154,9 @@ public class LoginController {
 //    session.removeAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME);
 //    return "redirect: " + redirectUri;
   }
+
+  @GetMapping("/logout")
+  public String logout() {
+    return "logout";
+  }
 }

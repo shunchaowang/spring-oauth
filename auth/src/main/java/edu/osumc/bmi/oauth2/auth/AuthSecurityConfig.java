@@ -1,6 +1,8 @@
 package edu.osumc.bmi.oauth2.auth;
 
+import edu.osumc.bmi.oauth2.auth.properties.AuthProperties;
 import edu.osumc.bmi.oauth2.auth.user.AuthUserDetailsService;
+import edu.osumc.bmi.oauth2.auth.web.logout.AuthLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +15,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired private AuthUserDetailsService userDetailsService;
+  @Autowired private AuthProperties authProperties;
 
   /**
    * Override this method to configure the {@link HttpSecurity}. Typically subclasses should not
@@ -35,29 +39,29 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     // if want to use custom login page for login
     http.authorizeRequests()
-        .anyRequest()
-        .authenticated()
+//        .antMatchers(authProperties.getLogoutSuccessUrl())
+//        .permitAll()
         .and()
         .formLogin()
         .loginPage("/login")
-//        .loginProcessingUrl("/login")
-        .permitAll();
-    http.authorizeRequests().anyRequest().authenticated().and().formLogin();
+        .permitAll()
+        .and()
+        .logout();
+//        .logoutSuccessHandler(logoutSuccessHandler());
   }
 
-    /**
-     * Override this method to configure {@link WebSecurity}. For example, if you wish to
-     * ignore certain requests.
-     *
-     * @param web
-     */
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring()
-                .antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**");
-    }
+  /**
+   * Override this method to configure {@link WebSecurity}. For example, if you wish to ignore
+   * certain requests.
+   *
+   * @param web
+   */
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    web.ignoring().antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**");
+  }
 
-    /**
+  /**
    * Used by the default implementation of {@link #authenticationManager()} to attempt to obtain an
    * {@link AuthenticationManager}. If overridden, the {@link AuthenticationManagerBuilder} should
    * be used to specify the {@link AuthenticationManager}.
@@ -123,5 +127,10 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public LogoutSuccessHandler logoutSuccessHandler() {
+    return new AuthLogoutSuccessHandler(authProperties);
   }
 }
