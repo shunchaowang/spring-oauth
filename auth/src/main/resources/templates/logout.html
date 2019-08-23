@@ -16,7 +16,10 @@
     <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
             <div class="card-body">
-                <h5 class="card-title text-center">Sign Out?</h5>
+                <h5 class="card-title text-center">Confirm to Sign Out</h5>
+                <div class="alert alert-info">
+                    Logout all SSO applications?
+                </div>
                 <form class="form-signin" th:action="@{/logout}" method="post">
                     <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign Out</button>
                 </form>

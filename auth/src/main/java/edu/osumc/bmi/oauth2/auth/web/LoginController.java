@@ -78,8 +78,13 @@ public class LoginController {
 
     SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
     if (savedRequest == null) {
-      // todo: throw exception
-      return null;
+      logger.info("The login is not coming from a redirection.");
+      return new ModelAndView("403");
+    }
+
+    if (StringUtils.isBlank(savedRequest.getRedirectUrl())) {
+      logger.info("The login redirection doesn't have any redirect url.");
+      return new ModelAndView("403");
     }
 
     // store client_id in the session
@@ -158,5 +163,10 @@ public class LoginController {
   @GetMapping("/logout")
   public String logout() {
     return "logout";
+  }
+
+  @GetMapping("/logout-success")
+  public String logoutSuccess() {
+    return "logout-success";
   }
 }

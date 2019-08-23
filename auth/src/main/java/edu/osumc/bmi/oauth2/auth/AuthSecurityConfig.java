@@ -3,6 +3,7 @@ package edu.osumc.bmi.oauth2.auth;
 import edu.osumc.bmi.oauth2.auth.properties.AuthProperties;
 import edu.osumc.bmi.oauth2.auth.user.AuthUserDetailsService;
 import edu.osumc.bmi.oauth2.auth.web.logout.AuthLogoutSuccessHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,17 +38,21 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    // if want to use custom login page for login
+    if (StringUtils.isNotBlank(authProperties.getLogoutSuccessUrl())) {
+      http.authorizeRequests().antMatchers(authProperties.getLogoutSuccessUrl()).permitAll();
+    }
+
     http.authorizeRequests()
-//        .antMatchers(authProperties.getLogoutSuccessUrl())
-//        .permitAll()
+        .anyRequest()
+        .authenticated()
         .and()
         .formLogin()
         .loginPage("/login")
         .permitAll()
         .and()
-        .logout();
-//        .logoutSuccessHandler(logoutSuccessHandler());
+        .logout()
+        //    .logoutSuccessUrl("/logout-success").permitAll();
+        .logoutSuccessHandler(logoutSuccessHandler());
   }
 
   /**

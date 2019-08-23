@@ -1,9 +1,11 @@
 package edu.osumc.bmi.oauth2.auth.web.logout;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.osumc.bmi.oauth2.auth.properties.AuthProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
@@ -18,6 +20,8 @@ public class AuthLogoutSuccessHandler implements LogoutSuccessHandler {
 
   private AuthProperties authProperties;
 
+  private ObjectMapper objectMapper = new ObjectMapper();
+
   public AuthLogoutSuccessHandler(AuthProperties authProperties) {
     this.authProperties = authProperties;
   }
@@ -29,7 +33,11 @@ public class AuthLogoutSuccessHandler implements LogoutSuccessHandler {
     logger.info("log out success");
 
     if (StringUtils.isBlank(authProperties.getLogoutSuccessUrl())) {
-
+      response.setContentType("application/json;charset=UTF-8");
+      response
+          .getWriter()
+          .write(
+              objectMapper.writeValueAsString(ResponseEntity.ok().body("Log out successfully.")));
     } else {
       logger.info("log out success url - {}", authProperties.getLogoutSuccessUrl());
       response.sendRedirect(authProperties.getLogoutSuccessUrl());
