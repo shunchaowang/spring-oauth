@@ -1,7 +1,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <footer th:fragment="footer" class="footer">
     <div class="navbar navbar-default navbar-fixed-bottom">
-        <h5 style="margin-left: 15px; " th:text="#{application.copyright.text}">Copy Right</h5>
+        <h5 style="margin-left: 15px;">Copyright &copy;
+            <span th:text="#{application.copyright.text}">
+                OSU
+            </span>
+        </h5>
     </div>
     <!-- end footer -->
 </footer>
