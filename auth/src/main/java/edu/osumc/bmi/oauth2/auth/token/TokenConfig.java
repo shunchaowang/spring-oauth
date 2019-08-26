@@ -58,11 +58,6 @@ public class TokenConfig {
         converter.setSigningKey(properties.getToken().getJwtSigningKey());
       }
 
-      //      converter.setSigningKey(properties.getToken().getJwtSigningKey());
-      //      KeyStoreKeyFactory keyStoreKeyFactory =
-      //              new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"),
-      // "wang22015".toCharArray());
-      //      converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
       return converter;
     }
 
