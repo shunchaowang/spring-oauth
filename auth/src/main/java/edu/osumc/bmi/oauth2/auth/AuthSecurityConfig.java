@@ -43,16 +43,15 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     http.authorizeRequests()
-        .anyRequest()
-        .authenticated()
-        .and()
+            .anyRequest().authenticated()
+            .and()
         .formLogin()
-        .loginPage("/login")
-        .permitAll()
-        .and()
+            .loginPage("/login")
+            .permitAll()
+            .and()
         .logout()
         //    .logoutSuccessUrl("/logout-success").permitAll();
-        .logoutSuccessHandler(logoutSuccessHandler());
+            .logoutSuccessHandler(logoutSuccessHandler());
   }
 
   /**
@@ -63,7 +62,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**");
+    web.ignoring().antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**", "/oauth/revoke");
   }
 
   /**
