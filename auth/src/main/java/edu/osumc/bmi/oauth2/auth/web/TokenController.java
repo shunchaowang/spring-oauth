@@ -44,7 +44,6 @@ public class TokenController {
     String tokenValue = authHeader.replace("Bearer", "").trim();
     logger.info("trying to revoke {}", tokenValue);
 
-
     tokenServices.revokeToken(tokenValue);
     return ResponseEntity.status(HttpStatus.OK).body("Token revoked");
   }

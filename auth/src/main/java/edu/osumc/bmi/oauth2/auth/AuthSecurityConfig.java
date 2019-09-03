@@ -43,6 +43,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     http.authorizeRequests()
+            .antMatchers("/oauth/revoke").permitAll() // for some reason this is not working with oauth
             .anyRequest().authenticated()
             .and()
         .formLogin()
@@ -62,7 +63,8 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
    */
   @Override
   public void configure(WebSecurity web) throws Exception {
-    web.ignoring().antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**", "/oauth/revoke");
+    web.ignoring().antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**");
+    web.ignoring().antMatchers("/oauth/revoke"); // this will make oauth work
   }
 
   /**
