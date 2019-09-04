@@ -1,7 +1,5 @@
 package edu.osumc.bmi.oauth2.auth.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.osumc.bmi.oauth2.auth.properties.AuthConstants;
 import edu.osumc.bmi.oauth2.auth.properties.AuthProperties;
 import org.apache.commons.lang3.StringUtils;
@@ -9,20 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -32,24 +26,23 @@ import java.util.concurrent.ForkJoinPool;
 public class LoginController {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  @Autowired
-  private AuthProperties properties;
+  @Autowired private AuthProperties properties;
 
   // todo: tbd
   // my testing apis, delete when released
-//  @GetMapping("/user/me")
-//  @ResponseBody
-//  public Object getPrincipal(Authentication principal) {
-//
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    try {
-//      logger.info(objectMapper.writeValueAsString(principal));
-//    } catch (JsonProcessingException e) {
-//      logger.error(e.getMessage());
-//      e.printStackTrace();
-//    }
-//    return principal;
-//  }
+  //  @GetMapping("/user/me")
+  //  @ResponseBody
+  //  public Object getPrincipal(Authentication principal) {
+  //
+  //    ObjectMapper objectMapper = new ObjectMapper();
+  //    try {
+  //      logger.info(objectMapper.writeValueAsString(principal));
+  //    } catch (JsonProcessingException e) {
+  //      logger.error(e.getMessage());
+  //      e.printStackTrace();
+  //    }
+  //    return principal;
+  //  }
 
   /**
    * The Api to be called by resource servers to retrieve user's info
@@ -88,7 +81,7 @@ public class LoginController {
     }
 
     // store client_id in the session
-//    HttpSession session = request.getSession();
+    //    HttpSession session = request.getSession();
     // only parse parameter when session doesn't contain client_id
     String clientId = "";
     Map<String, String[]> params = savedRequest.getParameterMap();
@@ -96,22 +89,25 @@ public class LoginController {
       clientId = params.get(AuthConstants.CLIENT_ID_PARAM_NAME)[0];
     }
 
-//    if (session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME) == null) {
-//      if (map0.get(AuthConstants.CLIENT_ID_PARAM_NAME) != null) {
-//        session.setAttribute(AuthConstants.CLIENT_ID_PARAM_NAME, map0.get(AuthConstants.CLIENT_ID_PARAM_NAME)[0]);
-//      }
-//    }
-//    String clientId = (String) session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME);
-//    logger.info("client_id: " + session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME));
-//
-//    // redirect_uri also needs to be stored in the session
-//    if (session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME) == null) {
-//      if (map0.get(AuthConstants.REDIRECT_URI_PARAM_NAME) != null) {
-//        session.setAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME, map0.get(AuthConstants.REDIRECT_URI_PARAM_NAME)[0]);
-//      }
-//    }
+    //    if (session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME) == null) {
+    //      if (map0.get(AuthConstants.CLIENT_ID_PARAM_NAME) != null) {
+    //        session.setAttribute(AuthConstants.CLIENT_ID_PARAM_NAME,
+    // map0.get(AuthConstants.CLIENT_ID_PARAM_NAME)[0]);
+    //      }
+    //    }
+    //    String clientId = (String) session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME);
+    //    logger.info("client_id: " + session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME));
+    //
+    //    // redirect_uri also needs to be stored in the session
+    //    if (session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME) == null) {
+    //      if (map0.get(AuthConstants.REDIRECT_URI_PARAM_NAME) != null) {
+    //        session.setAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME,
+    // map0.get(AuthConstants.REDIRECT_URI_PARAM_NAME)[0]);
+    //      }
+    //    }
 
-//    logger.info("redirect_uri: " + session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME));
+    //    logger.info("redirect_uri: " +
+    // session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME));
 
     ModelAndView mv = new ModelAndView("login");
     mv.addObject(AuthConstants.CLIENT_ID_PARAM_NAME, clientId);
@@ -119,12 +115,14 @@ public class LoginController {
     return mv;
   }
 
-//  @PostMapping("/login")
+  //  @PostMapping("/login")
   public String performLogin(HttpServletRequest request, HttpServletResponse response) {
 
-//    HttpSession session = request.getSession();
-//    logger.info("post client_id: " + session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME));
-//    logger.info("post redirect_uri: " + session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME));
+    //    HttpSession session = request.getSession();
+    //    logger.info("post client_id: " +
+    // session.getAttribute(AuthConstants.CLIENT_ID_PARAM_NAME));
+    //    logger.info("post redirect_uri: " +
+    // session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME));
 
     logger.info("in performLogin");
     SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
@@ -154,10 +152,10 @@ public class LoginController {
       e.printStackTrace();
     }
     return "redirect:" + savedRequest.getRedirectUrl();
-//    String redirectUri = (String) session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME);
-//    session.removeAttribute(AuthConstants.CLIENT_ID_PARAM_NAME);
-//    session.removeAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME);
-//    return "redirect: " + redirectUri;
+    //    String redirectUri = (String) session.getAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME);
+    //    session.removeAttribute(AuthConstants.CLIENT_ID_PARAM_NAME);
+    //    session.removeAttribute(AuthConstants.REDIRECT_URI_PARAM_NAME);
+    //    return "redirect: " + redirectUri;
   }
 
   @GetMapping("/logout")
