@@ -63,7 +63,6 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) throws Exception {
     web.ignoring().antMatchers("/vendors/**", "/css/**", "/js/**", "/images/**");
-//    web.ignoring().antMatchers("/oauth/revoke"); // this will make oauth work
   }
 
   /**
