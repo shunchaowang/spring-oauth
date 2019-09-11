@@ -22,7 +22,7 @@ public class OAuthClientDetailRepositoryTests {
     clientDetail.setClientId("client-id");
     OAuthClientDetail saved = oAuthClientDetailRepository.save(clientDetail);
     assertThat(saved != null);
-    OAuthClientDetail found = oAuthClientDetailRepository.findByClientId("client-id");
+    OAuthClientDetail found = oAuthClientDetailRepository.findByClientId("client-id").get();
     assertThat(found.getClientId().equals("client-id"));
   }
 }

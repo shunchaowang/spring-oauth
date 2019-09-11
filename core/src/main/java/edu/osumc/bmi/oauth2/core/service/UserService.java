@@ -2,28 +2,31 @@ package edu.osumc.bmi.oauth2.core.service;
 
 import edu.osumc.bmi.oauth2.core.domain.Role;
 import edu.osumc.bmi.oauth2.core.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
 public interface UserService {
 
-  User createOAuth2Admin(User user);
+  User createOAuth2Admin(User user) throws EntityNotFoundException;
 
-  User registerOAuth2User(User user);
+  User registerOAuth2User(User user) throws EntityNotFoundException;
 
-  User get(long id);
+  User get(long id) throws EntityNotFoundException;
 
-  User get(String username);
+  Optional<User> get(String username);
 
-  List<User> getAll();
+  Page<User> getAll(Pageable pageable);
 
-  User update(User user);
+  User update(User user) throws EntityNotFoundException;
 
   /*
    * This will deactivate user to log in.
    * Not real delete.
    * */
-  boolean delete(User user);
+  boolean delete(User user) throws EntityNotFoundException;
 
-  Role findRoleByName(String name);
+  Optional<Role> findRoleByName(String name);
 }

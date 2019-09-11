@@ -33,9 +33,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 
@@ -78,10 +80,16 @@ public class LoginController {
               Map user = principal(headers).getBody();
               if (user == null) {
                 result.setResult(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
+                return;
               } else {
                 info.put("name", (String) user.get("name"));
               }
-              User localUser = userService.get((String) user.get("name"));
+              Optional<User> userOptional = userService.get((String) user.get("name"));
+              if (!userOptional.isPresent()) {
+                result.setResult(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
+                return;
+              }
+              User localUser = userOptional.get();
               Set<Role> roles = localUser.getRoles();
               Set<String> localRoles = new HashSet<>();
               roles.stream()
@@ -129,7 +137,8 @@ public class LoginController {
     return new HttpHeaders() {
       {
         String auth = username + ":" + password;
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+//        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.US_ASCII));
         String authHeader =
             ServiceConstants.HTTP_AUTHORIZATION_BASIC + " " + new String(encodedAuth);
         set(ServiceConstants.HTTP_HEADER_AUTHORIZATION, authHeader);

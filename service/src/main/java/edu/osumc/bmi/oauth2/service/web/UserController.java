@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
 @RestController
@@ -38,7 +39,7 @@ public class UserController {
       return result;
     }
 
-    if (userService.get(userForm.getUsername()) != null) {
+    if (userService.get(userForm.getUsername()).isPresent()) {
       result.setResult(
           ResponseEntity.status(HttpStatus.CONFLICT)
               .body(userForm.getUsername() + " already exists."));
@@ -77,12 +78,14 @@ public class UserController {
           return result;
       }
 
-      User user = userService.get(username);
-      if (user == null) {
+      Optional<User> userOptional = userService.get(username);
+      if (!userOptional.isPresent()) {
           logger.info("Cannot find " + username);
           result.setResult(ResponseEntity.status(401).body("User does not exist"));
           return result;
       }
+
+      User user = userOptional.get();
 
       if (!passwordEncoder.matches(passwordForm.getCurrentPassword(), user.getPassword())) {
           logger.info("Current password does not match.");

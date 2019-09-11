@@ -29,7 +29,7 @@ public class ClientRepositoryTests {
     client.setOauth2ClientId("test-oauth2-client");
     clientRepository.save(client);
     // when
-    Client found = clientRepository.findByOauth2ClientId("test-oauth2-client");
+    Client found = clientRepository.findByOauth2ClientId("test-oauth2-client").get();
     // then
     assertThat(found.getOauth2ClientId().equals("test-oauth2-client"));
 
@@ -46,7 +46,7 @@ public class ClientRepositoryTests {
     User user = userBuilder.username("tom").password("tom").active(true).build();
 
     user = userRepository.save(user);
-    User userCreated = userRepository.getOne(user.getId());
+    User userCreated = userRepository.findById(user.getId()).get();
 
     AssertionsForClassTypes.assertThat(userCreated.getUsername().equals("tom"));
 
@@ -57,7 +57,7 @@ public class ClientRepositoryTests {
     client.setOauth2ClientId("test-oauth2-client");
     clientRepository.save(client);
     // when
-    Client clientCreated = clientRepository.findByOauth2ClientId("test-oauth2-client");
+    Client clientCreated = clientRepository.findByOauth2ClientId("test-oauth2-client").get();
     // then
     Assertions.assertThat(clientCreated.getOauth2ClientId().equals("test-oauth2-client"));
     Assertions.assertThat(clientCreated.getOwner().getId() == userCreated.getId());

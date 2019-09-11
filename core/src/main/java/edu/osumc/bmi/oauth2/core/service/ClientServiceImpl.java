@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class ClientServiceImpl implements ClientService {
@@ -16,17 +19,18 @@ public class ClientServiceImpl implements ClientService {
   @Autowired private OAuthClientDetailRepository oAuthClientDetailRepository;
 
   @Override
-  public Client get(long id) {
-    return clientRepository.getOne(id);
+  public Client get(long id) throws EntityNotFoundException {
+    return clientRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("User " + id + " not exists."));
   }
 
   @Override
-  public Client findByOauth2ClientId(String clientId) {
+  public Optional<Client> findByOauth2ClientId(String clientId) {
     return clientRepository.findByOauth2ClientId(clientId);
   }
 
   @Override
-  public OAuthClientDetail getOAuthClientDetail(String clientId) {
+  public Optional<OAuthClientDetail> getOAuthClientDetail(String clientId) {
     return oAuthClientDetailRepository.findByClientId(clientId);
   }
 }

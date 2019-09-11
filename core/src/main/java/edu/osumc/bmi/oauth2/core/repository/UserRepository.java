@@ -1,11 +1,13 @@
 package edu.osumc.bmi.oauth2.core.repository;
 
 import edu.osumc.bmi.oauth2.core.domain.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
 
-  User findByUsername(String username);
+@Repository
+public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+
+  Optional<User> findByUsername(String username);
 }

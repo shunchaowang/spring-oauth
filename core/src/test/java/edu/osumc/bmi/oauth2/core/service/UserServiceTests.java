@@ -16,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -31,10 +33,12 @@ public class UserServiceTests {
   @Test
   public void testCreateOAuth2Admin() {
     // mock role
-    when(roleRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID)).thenReturn(new Role());
+    when(roleRepository.findById(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID))
+            .thenReturn(Optional.of(new Role()));
 
     // mock client
-    when(clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID)).thenReturn(new Client());
+    when(clientRepository.findById(Constants.BMI_OAUTH2_SERVICE_ID))
+            .thenReturn(Optional.of(new Client()));
 
     User user = User.builder.username("john").password("john").active(true).build();
     user = userService.createOAuth2Admin(user);
@@ -45,10 +49,12 @@ public class UserServiceTests {
   @Test
   public void testRegisterOAuth2User() {
     // mock role
-    when(roleRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID)).thenReturn(new Role());
+    when(roleRepository.findById(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID))
+            .thenReturn(Optional.of(new Role()));
 
     // mock client
-    when(clientRepository.getOne(Constants.BMI_OAUTH2_SERVICE_ID)).thenReturn(new Client());
+    when(clientRepository.findById(Constants.BMI_OAUTH2_SERVICE_ID))
+            .thenReturn(Optional.of(new Client()));
 
     User user = User.builder.username("john").password("john").active(true).build();
 

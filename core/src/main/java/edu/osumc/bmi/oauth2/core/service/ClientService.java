@@ -3,11 +3,14 @@ package edu.osumc.bmi.oauth2.core.service;
 import edu.osumc.bmi.oauth2.core.domain.Client;
 import edu.osumc.bmi.oauth2.core.domain.OAuthClientDetail;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
+
 public interface ClientService {
 
-  Client get(long id);
+  Client get(long id) throws EntityNotFoundException;
 
-  Client findByOauth2ClientId(String clientId);
+  Optional<Client> findByOauth2ClientId(String oauth2ClientId) throws EntityNotFoundException;
 
-  OAuthClientDetail getOAuthClientDetail(String clientId);
+  Optional<OAuthClientDetail> getOAuthClientDetail(String oauth2ClientId) throws EntityNotFoundException;
 }

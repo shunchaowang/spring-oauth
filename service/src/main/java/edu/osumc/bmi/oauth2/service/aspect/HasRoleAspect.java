@@ -40,6 +40,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Aspect
@@ -85,18 +86,27 @@ public class HasRoleAspect {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Operation is protected.");
     }
 
-    Client client = clientService.findByOauth2ClientId(properties.getAuthServer().getClientId());
-    User user = userService.get(username);
+    Optional<Client> clientOptional = clientService.findByOauth2ClientId(properties.getAuthServer().getClientId());
+    if (!clientOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Client not exists.");
+    }
+
+    Client client = clientOptional.get();
+    Optional<User> userOptional = userService.get(username);
+    if (!userOptional.isPresent()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
+    }
+    User user = userOptional.get();
     if (hasRole.owner() && !user.getClientOwned().contains(client)) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User is not the owner.");
     }
 
     String value = hasRole.value();
-    Role role = userService.findRoleByName(value);
-
-    if (role == null) {
+    Optional<Role> roleOptional = userService.findRoleByName(value);
+    if (!roleOptional.isPresent()) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Role doesn't exist.");
     }
+    Role role = roleOptional.get();
 
     if (!user.getRoles().contains(role)) {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User doesn't have the role");

@@ -1,11 +1,14 @@
 package edu.osumc.bmi.oauth2.core.repository;
 
 import edu.osumc.bmi.oauth2.core.domain.Client;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ClientRepository extends JpaRepository<Client, Long> {
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
 
-  Client findByOauth2ClientId(String oauth2ClientId);
+@Repository
+public interface ClientRepository extends PagingAndSortingRepository<Client, Long> {
+
+  Optional<Client> findByOauth2ClientId(String oauth2ClientId) throws EntityNotFoundException;
 }

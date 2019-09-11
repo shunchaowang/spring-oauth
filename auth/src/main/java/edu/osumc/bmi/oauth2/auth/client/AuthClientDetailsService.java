@@ -23,7 +23,11 @@ public class AuthClientDetailsService implements ClientDetailsService {
    */
   @Override
   public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-    OAuthClientDetail clientDetail = clientService.getOAuthClientDetail(clientId);
+    OAuthClientDetail clientDetail =
+        clientService
+            .getOAuthClientDetail(clientId)
+            .orElseThrow(
+                () -> new ClientRegistrationException("Client " + clientId + " not exists."));
     return new AuthClientDetails(clientDetail);
   }
 }
