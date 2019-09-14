@@ -58,9 +58,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     if (jwtAccessTokenConverter != null) {
       TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
       List<TokenEnhancer> tokenEnhancers = new ArrayList<>();
-      // order is important, enhancer must come before jtw converter to make sure access token
-      // contains the
-      // additional info.
+      // order is important, enhancer must come before jwt converter to make sure access token
+      // contains the additional info.
       if (jwtTokenEnhancer != null) {
         tokenEnhancers.add(jwtTokenEnhancer);
       }
