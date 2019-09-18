@@ -14,16 +14,12 @@ dependencyManagement {
 sourceCompatibility = '1.8'
 
 dependencies {
+    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
     implementation('org.apache.commons:commons-lang3:3.8.1')
     implementation('org.apache.commons:commons-collections4:4.2')
     implementation('commons-beanutils:commons-beanutils:1.9.3')
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
-
-    runtime 'com.h2database:h2'
-    runtime 'mysql:mysql-connector-java'
+    testRuntimeOnly 'com.h2database:h2'
 }

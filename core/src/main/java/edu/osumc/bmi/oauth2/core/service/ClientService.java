@@ -18,4 +18,36 @@ public interface ClientService {
       throws EntityNotFoundException;
 
   Page<OAuthClientDetail> findAllOAuthClientDetails(Pageable pageable);
+
+  Page<ClientDetail> findAllClientDetails(Pageable pageable);
+
+  /**
+   * interface inner class has public static by default encapsulate both client and oauth client
+   * detail
+   */
+  class ClientDetail extends OAuthClientDetail {
+
+    public ClientDetail(OAuthClientDetail oAuthClientDetail) {
+      this.oAuthClientDetail = oAuthClientDetail;
+    }
+
+    private OAuthClientDetail oAuthClientDetail;
+    private String name;
+
+    public OAuthClientDetail getoAuthClientDetail() {
+      return oAuthClientDetail;
+    }
+
+    public void setoAuthClientDetail(OAuthClientDetail oAuthClientDetail) {
+      this.oAuthClientDetail = oAuthClientDetail;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+  }
 }
