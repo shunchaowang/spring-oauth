@@ -58,12 +58,10 @@ public class ClientServiceImpl implements ClientService {
           clientOptional.ifPresent(client -> clientDetail.setName(client.getName()));
           clientDetailList.add(clientDetail);
         }));
-    Page<ClientDetail> clientDetails =
-        new PageImpl<>(
+
+   return new PageImpl<>(
             clientDetailList,
             oAuthClientDetails.getPageable(),
             oAuthClientDetails.getTotalElements());
-
-    return clientDetails;
   }
 }
