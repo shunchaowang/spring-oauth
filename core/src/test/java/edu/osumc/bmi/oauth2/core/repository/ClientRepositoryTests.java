@@ -64,8 +64,4 @@ public class ClientRepositoryTests {
     Assertions.assertThat(clientCreated.getOwner().getId() == userCreated.getId());
   }
 
-  @Test
-  public void whenFindAll_thenReturnOAuthClientDetails() {
-
-  }
 }
