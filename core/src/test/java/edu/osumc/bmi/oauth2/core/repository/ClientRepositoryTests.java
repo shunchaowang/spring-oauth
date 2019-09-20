@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class ClientRepositoryTests {
 
+  @Autowired TestEntityManager entityManager;
   @Autowired private ClientRepository clientRepository;
-
   @Autowired private UserRepository userRepository;
 
   @Test
@@ -61,5 +62,10 @@ public class ClientRepositoryTests {
     // then
     Assertions.assertThat(clientCreated.getOauth2ClientId().equals("test-oauth2-client"));
     Assertions.assertThat(clientCreated.getOwner().getId() == userCreated.getId());
+  }
+
+  @Test
+  public void whenFindAll_thenReturnOAuthClientDetails() {
+
   }
 }
