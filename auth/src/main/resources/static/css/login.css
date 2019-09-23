@@ -47,12 +47,12 @@ body {
     border-radius: 2rem;
 }
 
-.form-label-group>input,
-.form-label-group>label {
+.form-label-group > input,
+.form-label-group > label {
     padding: var(--input-padding-y) var(--input-padding-x);
 }
 
-.form-label-group>label {
+.form-label-group > label {
     position: absolute;
     top: 0;
     left: 0;
@@ -92,7 +92,7 @@ body {
     padding-bottom: calc(var(--input-padding-y) / 3);
 }
 
-.form-label-group input:not(:placeholder-shown)~label {
+.form-label-group input:not(:placeholder-shown) ~ label {
     padding-top: calc(var(--input-padding-y) / 3);
     padding-bottom: calc(var(--input-padding-y) / 3);
     font-size: 12px;
@@ -113,9 +113,10 @@ body {
 -------------------------------------------------- */
 
 @supports (-ms-ime-align: auto) {
-    .form-label-group>label {
+    .form-label-group > label {
         display: none;
     }
+
     .form-label-group input::-ms-input-placeholder {
         color: #777;
     }
@@ -126,9 +127,10 @@ body {
 
 @media all and (-ms-high-contrast: none),
 (-ms-high-contrast: active) {
-    .form-label-group>label {
+    .form-label-group > label {
         display: none;
     }
+
     .form-label-group input:-ms-input-placeholder {
         color: #777;
     }

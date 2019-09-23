@@ -63,5 +63,4 @@ public class ClientRepositoryTests {
     Assertions.assertThat(clientCreated.getOauth2ClientId().equals("test-oauth2-client"));
     Assertions.assertThat(clientCreated.getOwner().getId() == userCreated.getId());
   }
-
 }

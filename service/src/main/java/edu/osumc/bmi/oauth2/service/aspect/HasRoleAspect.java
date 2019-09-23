@@ -86,7 +86,8 @@ public class HasRoleAspect {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Operation is protected.");
     }
 
-    Optional<Client> clientOptional = clientService.findByOauth2ClientId(properties.getAuthServer().getClientId());
+    Optional<Client> clientOptional =
+        clientService.findByOauth2ClientId(properties.getAuthServer().getClientId());
     if (!clientOptional.isPresent()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Client not exists.");
     }

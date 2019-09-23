@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">BMI OAuth</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" href="../../static/vendors/bootstrap/css/bootstrap.css"
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <link href="../../static/vendors/bootstrap/css/bootstrap.css" rel="stylesheet"
           th:href="@{/vendors/bootstrap/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" href="../../static/css/app.css" th:href="@{/css/app.css}"/>
+    <link href="../../static/css/app.css" rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 
 <body class="container">
@@ -21,7 +21,7 @@
         using the layout also defines a layout:fragment="content" segment. </p>
 </div>
 
-<footer th:insert="fragments/footer :: footer" class="footer">
+<footer class="footer" th:insert="fragments/footer :: footer">
     This content will remain, but other content will be inserted after it.
 </footer>
 

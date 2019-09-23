@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,14 +34,20 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public User createOAuth2Admin(User user) throws EntityNotFoundException {
 
-    Role role = roleRepository.findById(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID)
-            .orElseThrow(() ->
-                    new EntityNotFoundException(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID + " not exists.")
-            );
+    Role role =
+        roleRepository
+            .findById(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID + " not exists."));
     user.getRoles().add(role);
 
-    Client client = clientRepository.findById(Constants.BMI_OAUTH2_SERVICE_ID)
-            .orElseThrow(() -> new EntityNotFoundException(Constants.BMI_OAUTH2_SERVICE_ID + " not exists"));
+    Client client =
+        clientRepository
+            .findById(Constants.BMI_OAUTH2_SERVICE_ID)
+            .orElseThrow(
+                () -> new EntityNotFoundException(Constants.BMI_OAUTH2_SERVICE_ID + " not exists"));
 
     client.addUser(user);
     user.setActive(true);
@@ -52,12 +57,19 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public User registerOAuth2User(User user) throws EntityNotFoundException {
-    Role role = roleRepository.findById(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID)
-            .orElseThrow(() ->
-                    new EntityNotFoundException(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID + " not exists."));
+    Role role =
+        roleRepository
+            .findById(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID + " not exists."));
     user.getRoles().add(role);
-    Client client = clientRepository.findById(Constants.BMI_OAUTH2_SERVICE_ID)
-            .orElseThrow(() ->
+    Client client =
+        clientRepository
+            .findById(Constants.BMI_OAUTH2_SERVICE_ID)
+            .orElseThrow(
+                () ->
                     new EntityNotFoundException(Constants.BMI_OAUTH2_SERVICE_ID + " not exists."));
     client.addUser(user);
     user.setActive(true);
@@ -66,8 +78,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User get(long id) throws EntityNotFoundException {
-    return userRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("User " + id + " not exists."));
+    return userRepository
+        .findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("User " + id + " not exists."));
   }
 
   @Override
@@ -83,8 +96,9 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public User update(User user) throws EntityNotFoundException {
-    userRepository.findById(user.getId()).orElseThrow(() ->
-            new EntityNotFoundException(user.getUsername() + " not exists."));
+    userRepository
+        .findById(user.getId())
+        .orElseThrow(() -> new EntityNotFoundException(user.getUsername() + " not exists."));
     return userRepository.save(user);
   }
 

@@ -42,7 +42,8 @@ public class AuthUserDetailsService implements UserDetailsService {
     HttpServletRequest request =
         ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
     // String clientId = request.getParameter(AuthConstants.CLIENT_ID_PARAM_NAME);
-    User user = userService.get(username).orElseThrow(() -> new UsernameNotFoundException(username));
+    User user =
+        userService.get(username).orElseThrow(() -> new UsernameNotFoundException(username));
     // if (!user.getClients().contains(client)) {
     // // if user has not registered to the client yet, register automatically
     // user.getClients().add(client);

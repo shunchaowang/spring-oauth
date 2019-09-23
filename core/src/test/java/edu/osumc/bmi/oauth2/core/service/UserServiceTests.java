@@ -34,11 +34,11 @@ public class UserServiceTests {
   public void testCreateOAuth2Admin() {
     // mock role
     when(roleRepository.findById(Constants.BMI_OAUTH2_SERVICE_ROLE_ADMIN_ID))
-            .thenReturn(Optional.of(new Role()));
+        .thenReturn(Optional.of(new Role()));
 
     // mock client
     when(clientRepository.findById(Constants.BMI_OAUTH2_SERVICE_ID))
-            .thenReturn(Optional.of(new Client()));
+        .thenReturn(Optional.of(new Client()));
 
     User user = User.builder.username("john").password("john").active(true).build();
     user = userService.createOAuth2Admin(user);
@@ -50,11 +50,11 @@ public class UserServiceTests {
   public void testRegisterOAuth2User() {
     // mock role
     when(roleRepository.findById(Constants.BMI_OAUTH2_SERVICE_ROLE_USER_ID))
-            .thenReturn(Optional.of(new Role()));
+        .thenReturn(Optional.of(new Role()));
 
     // mock client
     when(clientRepository.findById(Constants.BMI_OAUTH2_SERVICE_ID))
-            .thenReturn(Optional.of(new Client()));
+        .thenReturn(Optional.of(new Client()));
 
     User user = User.builder.username("john").password("john").active(true).build();
 
@@ -64,10 +64,9 @@ public class UserServiceTests {
   }
 
   /**
-   * TestConfiguration can be used to set up the context for the test, like bean injection.
-   * But the dependencies of the injected beans need to be marked as MockBean from class level
-   * to satisfy spring bean factory;
-   * Another way is to mark all beans needed by test to be MockBean.
+   * TestConfiguration can be used to set up the context for the test, like bean injection. But the
+   * dependencies of the injected beans need to be marked as MockBean from class level to satisfy
+   * spring bean factory; Another way is to mark all beans needed by test to be MockBean.
    */
   @TestConfiguration
   static class UserServiceTestsContextConfiguration {

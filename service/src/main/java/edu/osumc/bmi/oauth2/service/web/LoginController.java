@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -137,7 +136,8 @@ public class LoginController {
     return new HttpHeaders() {
       {
         String auth = username + ":" + password;
-//        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+        //        byte[] encodedAuth =
+        // Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
         byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.US_ASCII));
         String authHeader =
             ServiceConstants.HTTP_AUTHORIZATION_BASIC + " " + new String(encodedAuth);

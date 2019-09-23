@@ -59,9 +59,7 @@ public class ClientServiceImpl implements ClientService {
           clientDetailList.add(clientDetail);
         }));
 
-   return new PageImpl<>(
-            clientDetailList,
-            oAuthClientDetails.getPageable(),
-            oAuthClientDetails.getTotalElements());
+    return new PageImpl<>(
+        clientDetailList, oAuthClientDetails.getPageable(), oAuthClientDetails.getTotalElements());
   }
 }

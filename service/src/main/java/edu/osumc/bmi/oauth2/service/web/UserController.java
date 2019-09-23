@@ -62,47 +62,49 @@ public class UserController {
 
   @PostMapping("/api/change-password")
   public DeferredResult<ResponseEntity<String>> changePassword(
-          @Valid @RequestBody ChangePasswordForm passwordForm, BindingResult bindingResult) {
+      @Valid @RequestBody ChangePasswordForm passwordForm, BindingResult bindingResult) {
 
-      DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
-      if (bindingResult.hasErrors()) {
-          result.setResult(ResponseEntity.badRequest().body("Bad Request"));
-          return result;
-      }
-
-      String username = requestUtils.retrieveRequestUser();
-      logger.info(username + " is changing the password.");
-      if (StringUtils.isEmpty(username)) {
-          result.setResult(ResponseEntity.status(401).body("Username does not exist"));
-          logger.info("Cannot find username from the request.");
-          return result;
-      }
-
-      Optional<User> userOptional = userService.get(username);
-      if (!userOptional.isPresent()) {
-          logger.info("Cannot find " + username);
-          result.setResult(ResponseEntity.status(401).body("User does not exist"));
-          return result;
-      }
-
-      User user = userOptional.get();
-
-      if (!passwordEncoder.matches(passwordForm.getCurrentPassword(), user.getPassword())) {
-          logger.info("Current password does not match.");
-          result.setResult(ResponseEntity.status(HttpStatus.FORBIDDEN).body("Current password does not match"));
-          return result;
-      }
-
-      if (passwordEncoder.matches(passwordForm.getPassword(), user.getPassword())) {
-          result.setResult(ResponseEntity.status(406).body("Password cannot be the same with current one"));
-          return result;
-      }
-
-      user.setPassword(passwordEncoder.encode(passwordForm.getPassword()));
-      userService.update(user);
-      result.setResult(ResponseEntity.status(HttpStatus.OK).body(username + " has successfully changed password"));
-
+    DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
+    if (bindingResult.hasErrors()) {
+      result.setResult(ResponseEntity.badRequest().body("Bad Request"));
       return result;
-  }
+    }
 
+    String username = requestUtils.retrieveRequestUser();
+    logger.info(username + " is changing the password.");
+    if (StringUtils.isEmpty(username)) {
+      result.setResult(ResponseEntity.status(401).body("Username does not exist"));
+      logger.info("Cannot find username from the request.");
+      return result;
+    }
+
+    Optional<User> userOptional = userService.get(username);
+    if (!userOptional.isPresent()) {
+      logger.info("Cannot find " + username);
+      result.setResult(ResponseEntity.status(401).body("User does not exist"));
+      return result;
+    }
+
+    User user = userOptional.get();
+
+    if (!passwordEncoder.matches(passwordForm.getCurrentPassword(), user.getPassword())) {
+      logger.info("Current password does not match.");
+      result.setResult(
+          ResponseEntity.status(HttpStatus.FORBIDDEN).body("Current password does not match"));
+      return result;
+    }
+
+    if (passwordEncoder.matches(passwordForm.getPassword(), user.getPassword())) {
+      result.setResult(
+          ResponseEntity.status(406).body("Password cannot be the same with current one"));
+      return result;
+    }
+
+    user.setPassword(passwordEncoder.encode(passwordForm.getPassword()));
+    userService.update(user);
+    result.setResult(
+        ResponseEntity.status(HttpStatus.OK).body(username + " has successfully changed password"));
+
+    return result;
+  }
 }

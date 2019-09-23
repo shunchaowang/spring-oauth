@@ -27,12 +27,12 @@ public interface ClientService {
    */
   class ClientDetail extends OAuthClientDetail {
 
+    private OAuthClientDetail oAuthClientDetail;
+    private String name;
+
     public ClientDetail(OAuthClientDetail oAuthClientDetail) {
       this.oAuthClientDetail = oAuthClientDetail;
     }
-
-    private OAuthClientDetail oAuthClientDetail;
-    private String name;
 
     public OAuthClientDetail getoAuthClientDetail() {
       return oAuthClientDetail;

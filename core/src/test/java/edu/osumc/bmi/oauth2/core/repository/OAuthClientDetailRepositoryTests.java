@@ -19,8 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class OAuthClientDetailRepositoryTests {
 
   @Autowired private OAuthClientDetailRepository oAuthClientDetailRepository;
-  @Autowired
-  private TestEntityManager entityManager;
+  @Autowired private TestEntityManager entityManager;
 
   @Test
   public void testFindByClientId() {
@@ -44,7 +43,8 @@ public class OAuthClientDetailRepositoryTests {
     entityManager.flush();
 
     // when
-    Optional<OAuthClientDetail> foundOptional = oAuthClientDetailRepository.findByClientId(clientId);
+    Optional<OAuthClientDetail> foundOptional =
+        oAuthClientDetailRepository.findByClientId(clientId);
 
     // then
     assertThat(foundOptional.isPresent());
@@ -69,7 +69,7 @@ public class OAuthClientDetailRepositoryTests {
     // when
     List<OAuthClientDetail> clientDetails = new ArrayList<>();
     Iterable<OAuthClientDetail> clientDetailIterable = oAuthClientDetailRepository.findAll();
-//    clientDetailIterable.forEach(e -> clientDetails.add(e));
+    //    clientDetailIterable.forEach(e -> clientDetails.add(e));
     clientDetailIterable.forEach(clientDetails::add);
 
     // then

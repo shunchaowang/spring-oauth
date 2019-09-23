@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/main}">
+<html layout:decorate="~{layouts/main}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Login</title>
-    <link rel="stylesheet" href="../static/css/login.css" th:href="@{/css/login.css}"/>
+    <link href="../static/css/login.css" rel="stylesheet" th:href="@{/css/login.css}"/>
 </head>
 
 <body>
@@ -27,21 +27,21 @@
                         You have been logged out.
                     </div>
                 </div>
-                <form class="form-signin" th:action="@{/login}" method="post">
+                <form class="form-signin" method="post" th:action="@{/login}">
                     <div class="form-label-group">
-                        <input type="text" name="username" id="username" class="form-control"
-                               placeholder="Username" autocomplete="username" required/>
+                        <input autocomplete="username" class="form-control" id="username" name="username"
+                               placeholder="Username" required type="text"/>
                         <label for="username">Username</label>
                     </div>
                     <div class="form-label-group">
-                        <input type="password" name="password" id="password" class="form-control"
-                               placeholder="Password" autocomplete="current-password" required>
+                        <input autocomplete="current-password" class="form-control" id="password" name="password"
+                               placeholder="Password" required type="password">
                         <label for="password">Password</label>
                     </div>
                     <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
                 </form>
                 <hr class="my-4">
-                <a href="${registerUrl}" th:href="${registerUrl}" target="_blank">
+                <a href="${registerUrl}" target="_blank" th:href="${registerUrl}">
                     <button class="btn btn-lg btn-block text-uppercase">
                         Register
                     </button>
