@@ -90,7 +90,10 @@ public class ClientServiceIntegrationTests {
     logger.debug("size - {}", clientDetails.getSize());
     logger.debug("content list size - {}", clientDetails.getContent().size());
     clientDetails.forEach(
-        (clientDetail) -> logger.debug("client detail is named - {}", clientDetail.getName()));
+        (clientDetail) -> {
+            logger.debug("client detail is named - {}", clientDetail.getName());
+            logger.debug("client id - {}", clientDetail.getOAuthClientDetail().getClientId());
+        });
   }
 
   @TestConfiguration

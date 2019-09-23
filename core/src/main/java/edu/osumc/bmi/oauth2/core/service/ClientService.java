@@ -25,7 +25,7 @@ public interface ClientService {
    * interface inner class has public static by default encapsulate both client and oauth client
    * detail
    */
-  class ClientDetail extends OAuthClientDetail {
+  class ClientDetail {
 
     private OAuthClientDetail oAuthClientDetail;
     private String name;
@@ -34,12 +34,8 @@ public interface ClientService {
       this.oAuthClientDetail = oAuthClientDetail;
     }
 
-    public OAuthClientDetail getoAuthClientDetail() {
+    public OAuthClientDetail getOAuthClientDetail() {
       return oAuthClientDetail;
-    }
-
-    public void setoAuthClientDetail(OAuthClientDetail oAuthClientDetail) {
-      this.oAuthClientDetail = oAuthClientDetail;
     }
 
     public String getName() {
