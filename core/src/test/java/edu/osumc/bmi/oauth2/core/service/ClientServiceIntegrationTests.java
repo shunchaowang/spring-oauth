@@ -37,7 +37,6 @@ public class ClientServiceIntegrationTests {
   @MockBean private OAuthClientDetailRepository oAuthClientDetailRepository;
   private Pageable firstPageWithTwoElementsSortByNameDesc =
       PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "name"));
-  private List<OAuthClientDetail> oAuthClientDetailList;
 
   @Before
   public void setUp() {
@@ -45,14 +44,11 @@ public class ClientServiceIntegrationTests {
     String clientId = "client_id";
 
     // mock oauthClientDetails Page
-    oAuthClientDetailList = new ArrayList<>();
+    List<OAuthClientDetail> oAuthClientDetailList = new ArrayList<>();
     for (int i = 0; i < count; i++) {
       //            String name = RandomStringUtils.random(8);
       OAuthClientDetail oAuthClientDetail = new OAuthClientDetail();
       oAuthClientDetail.setClientId(clientId + " " + i);
-      //            ClientService.ClientDetail clientDetail = new
-      // ClientService.ClientDetail(oAuthClientDetail);
-      //            clientDetail.setName(name);
       oAuthClientDetailList.add(oAuthClientDetail);
     }
 
