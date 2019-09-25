@@ -1,13 +1,14 @@
 package edu.osumc.bmi.oauth2.auth.properties;
 
-public interface AuthConstants {
+public class AuthConstants {
 
-  String DB_DRIVER_KEY = "driver";
-  String DB_URL_KEY = "url";
-  String DB_USERNAME_KEY = "username";
-  String DB_PASSWORD_KEY = "password";
+  private AuthConstants() {}
 
-  String CLIENT_ID_PARAM_NAME = "client_id";
-  String REDIRECT_URI_PARAM_NAME = "redirect_uri";
-  String REGISTER_URL = "registerUrl";
+  public static final String DB_DRIVER_KEY = "driver";
+  public static final String DB_URL_KEY = "url";
+  public static final String DB_USERNAME_KEY = "username";
+  public static final String DB_PASSWORD_KEY = "password";
+  public static final String CLIENT_ID_PARAM_NAME = "client_id";
+  public static final String REDIRECT_URI_PARAM_NAME = "redirect_uri";
+  public static final String REGISTER_URL = "registerUrl";
 }
