@@ -46,6 +46,19 @@ public class ClientServiceImpl implements ClientService {
   }
 
   @Override
+  public Optional<ClientDetail> findClientDetail(String oauth2ClientId) {
+    Optional<OAuthClientDetail> oAuthClientDetailOptional =
+        oAuthClientDetailRepository.findByClientId(oauth2ClientId);
+    if (!oAuthClientDetailOptional.isPresent()) return Optional.empty();
+    Optional<Client> clientOptional = clientRepository.findByOauth2ClientId(oauth2ClientId);
+    if (!clientOptional.isPresent()) return Optional.empty();
+    ClientDetail clientDetail = new ClientDetail(oAuthClientDetailOptional.get());
+    clientDetail.setName(clientOptional.get().getName());
+
+    return Optional.of(clientDetail);
+  }
+
+  @Override
   public Page<ClientDetail> findAllClientDetails(Pageable pageable) {
 
     Page<OAuthClientDetail> oAuthClientDetails = oAuthClientDetailRepository.findAll(pageable);

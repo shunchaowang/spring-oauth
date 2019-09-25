@@ -19,6 +19,8 @@ public interface ClientService {
 
   Page<OAuthClientDetail> findAllOAuthClientDetails(Pageable pageable);
 
+  Optional<ClientDetail> findClientDetail(String oauth2ClientId);
+
   Page<ClientDetail> findAllClientDetails(Pageable pageable);
 
   /**
