@@ -22,8 +22,9 @@ public class ClientController {
     return clientService.findAllClientDetails(pageable);
   }
 
-  @GetMapping("/api/clients/{clientId}")
-  public ClientService.ClientDetail getClient(@PathVariable String clientId) {
-    return null;
+  @GetMapping("/api/clients/{oauth2ClientId}")
+  public ClientService.ClientDetail getClient(@PathVariable String oauth2ClientId) {
+
+    return clientService.findClientDetail(oauth2ClientId).orElse(null);
   }
 }
