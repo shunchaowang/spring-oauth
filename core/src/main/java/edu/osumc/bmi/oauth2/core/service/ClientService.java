@@ -25,27 +25,68 @@ public interface ClientService {
 
   /**
    * interface inner class has public static by default encapsulate both client and oauth client
-   * detail
+   * detail. this class should be immutable
    */
   class ClientDetail {
 
-    private OAuthClientDetail oAuthClientDetail;
+    // attributes from client class
     private String name;
+    private boolean active;
 
-    public ClientDetail(OAuthClientDetail oAuthClientDetail) {
-      this.oAuthClientDetail = oAuthClientDetail;
+    // attributes from OAuth2ClientDetail class
+    private String clientId;
+    private String authorizedGrantTypes;
+    private String webServerRedirectUri;
+    private int accessTokenValidity;
+    private int refreshTokenValidity;
+    private String autoApprove;
+
+    public ClientDetail(OAuthClientDetail oAuthClientDetail, Client client) {
+      this(oAuthClientDetail);
+      name = client.getName();
+      active = client.getActive();
     }
 
-    public OAuthClientDetail getOAuthClientDetail() {
-      return oAuthClientDetail;
+    public ClientDetail(OAuthClientDetail oAuthClientDetail) {
+
+      clientId = oAuthClientDetail.getClientId();
+      authorizedGrantTypes = oAuthClientDetail.getAuthorizedGrantTypes();
+      webServerRedirectUri = oAuthClientDetail.getWebServerRedirectUri();
+      accessTokenValidity = oAuthClientDetail.getAccessTokenValidity();
+      refreshTokenValidity = oAuthClientDetail.getRefreshTokenValidity();
+      autoApprove = oAuthClientDetail.getAutoApprove();
     }
 
     public String getName() {
       return name;
     }
 
-    public void setName(String name) {
-      this.name = name;
+    public boolean isActive() {
+      return active;
+    }
+
+    public String getClientId() {
+      return clientId;
+    }
+
+    public String getAuthorizedGrantTypes() {
+      return authorizedGrantTypes;
+    }
+
+    public String getWebServerRedirectUri() {
+      return webServerRedirectUri;
+    }
+
+    public int getAccessTokenValidity() {
+      return accessTokenValidity;
+    }
+
+    public int getRefreshTokenValidity() {
+      return refreshTokenValidity;
+    }
+
+    public String getAutoApprove() {
+      return autoApprove;
     }
   }
 }

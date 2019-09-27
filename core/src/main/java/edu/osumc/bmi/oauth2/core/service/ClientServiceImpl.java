@@ -49,11 +49,11 @@ public class ClientServiceImpl implements ClientService {
   public Optional<ClientDetail> findClientDetail(String oauth2ClientId) {
     Optional<OAuthClientDetail> oAuthClientDetailOptional =
         oAuthClientDetailRepository.findByClientId(oauth2ClientId);
-    if (!oAuthClientDetailOptional.isPresent()) return Optional.empty();
     Optional<Client> clientOptional = clientRepository.findByOauth2ClientId(oauth2ClientId);
-    if (!clientOptional.isPresent()) return Optional.empty();
-    ClientDetail clientDetail = new ClientDetail(oAuthClientDetailOptional.get());
-    clientDetail.setName(clientOptional.get().getName());
+    if (!oAuthClientDetailOptional.isPresent() || !clientOptional.isPresent())
+      return Optional.empty();
+    ClientDetail clientDetail =
+        new ClientDetail(oAuthClientDetailOptional.get(), clientOptional.get());
 
     return Optional.of(clientDetail);
   }
@@ -65,10 +65,11 @@ public class ClientServiceImpl implements ClientService {
     List<ClientDetail> clientDetailList = new ArrayList<>();
     oAuthClientDetails.forEach(
         (oAuthClientDetail -> {
-          ClientDetail clientDetail = new ClientDetail(oAuthClientDetail);
-          Optional<Client> clientOptional =
-              clientRepository.findByOauth2ClientId(oAuthClientDetail.getClientId());
-          clientOptional.ifPresent(client -> clientDetail.setName(client.getName()));
+          ClientDetail clientDetail =
+              clientRepository
+                  .findByOauth2ClientId(oAuthClientDetail.getClientId())
+                  .map(client -> new ClientDetail(oAuthClientDetail, client))
+                  .orElseGet(() -> new ClientDetail(oAuthClientDetail));
           clientDetailList.add(clientDetail);
         }));
 
