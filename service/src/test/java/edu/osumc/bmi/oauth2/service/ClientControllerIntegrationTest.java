@@ -1,5 +1,6 @@
 package edu.osumc.bmi.oauth2.service;
 
+import edu.osumc.bmi.oauth2.core.data.ClientDetail;
 import edu.osumc.bmi.oauth2.core.domain.Client;
 import edu.osumc.bmi.oauth2.core.domain.OAuthClientDetail;
 import edu.osumc.bmi.oauth2.core.service.ClientService;
@@ -42,11 +43,9 @@ public class ClientControllerIntegrationTest {
   @Test
   public void givenClients_whenFindAllClients_thenReturnJson() throws Exception {
 
-    OAuthClientDetail oAuthClientDetail = new OAuthClientDetail();
-    Client client = new Client();
-    ClientService.ClientDetail clientDetail = new ClientService.ClientDetail(oAuthClientDetail, client);
-    List<ClientService.ClientDetail> clientDetailList = Collections.singletonList(clientDetail);
-    Page<ClientService.ClientDetail> clientDetailPage = new PageImpl<>(clientDetailList);
+    ClientDetail clientDetail = new ClientDetail(null, null, null, null, null, null, null, null);
+    List<ClientDetail> clientDetailList = Collections.singletonList(clientDetail);
+    Page<ClientDetail> clientDetailPage = new PageImpl<>(clientDetailList);
 
     when(clientService.findAllClientDetails(null)).thenReturn(clientDetailPage);
 
