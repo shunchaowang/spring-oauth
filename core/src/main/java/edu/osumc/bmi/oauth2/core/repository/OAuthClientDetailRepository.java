@@ -13,19 +13,19 @@ import java.util.Optional;
 @Repository
 public interface OAuthClientDetailRepository extends PagingAndSortingRepository<OAuthClientDetail, String> {
     Optional<OAuthClientDetail> findByClientId(String clientId);
+//
+//    @Query("select new edu.osumc.bmi.oauth2.core.data.ClientDetail(client.name, client.active, " +
+//        "oAuthClientDetail.clientId, oAuthClientDetail.authorizedGrantTypes, oAuthClientDetail.webServerRedirectUri, " +
+//        "oAuthClientDetail.accessTokenValidity, oAuthClientDetail.refreshTokenValidity, oAuthClientDetail.autoApprove) " +
+//        "from OAuthClientDetail oAuthClientDetail " +
+//        "left join Client client on oAuthClientDetail.clientId = client.oauth2ClientId " +
+//        "where oAuthClientDetail.clientId = ?1")
+//    Optional<ClientDetail> findClientDetailByClientId(String clientId);
 
-    @Query("select new edu.osumc.bmi.oauth2.core.data.ClientDetail(client.name, client.active, " +
-        "oAuthClientDetail.clientId, oAuthClientDetail.authorizedGrantTypes, oAuthClientDetail.webServerRedirectUri, " +
-        "oAuthClientDetail.accessTokenValidity, oAuthClientDetail.refreshTokenValidity, oAuthClientDetail.autoApprove) " +
-        "from OAuthClientDetail oAuthClientDetail " +
-        "left join Client client on oAuthClientDetail.clientId = client.oauth2ClientId " +
-        "where oAuthClientDetail.clientId = ?1")
-    Optional<ClientDetail> findClientDetailByClientId(String clientId);
-
-    @Query("select new edu.osumc.bmi.oauth2.core.data.ClientDetail(client.name, client.active, " +
-        "oAuthClientDetail.clientId, oAuthClientDetail.authorizedGrantTypes, oAuthClientDetail.webServerRedirectUri, " +
-        "oAuthClientDetail.accessTokenValidity, oAuthClientDetail.refreshTokenValidity, oAuthClientDetail.autoApprove) " +
-        "from OAuthClientDetail oAuthClientDetail " +
-        "left join Client client on oAuthClientDetail.clientId = client.oauth2ClientId")
-    Page<ClientDetail> findAllClientDetail(Pageable pageable);
+//    @Query("select new edu.osumc.bmi.oauth2.core.data.ClientDetail(client.name, client.active, " +
+//        "oAuthClientDetail.clientId, oAuthClientDetail.authorizedGrantTypes, oAuthClientDetail.webServerRedirectUri, " +
+//        "oAuthClientDetail.accessTokenValidity, oAuthClientDetail.refreshTokenValidity, oAuthClientDetail.autoApprove) " +
+//        "from OAuthClientDetail oAuthClientDetail " +
+//        "left join Client client on oAuthClientDetail.clientId = client.oauth2ClientId")
+//    Page<OAuthClientDetail> findAll(Pageable pageable);
 }

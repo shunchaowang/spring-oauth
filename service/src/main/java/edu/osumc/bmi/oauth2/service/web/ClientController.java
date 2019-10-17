@@ -1,6 +1,7 @@
 package edu.osumc.bmi.oauth2.service.web;
 
 import edu.osumc.bmi.oauth2.core.data.ClientDetail;
+import edu.osumc.bmi.oauth2.core.domain.OAuthClientDetail;
 import edu.osumc.bmi.oauth2.core.service.ClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,14 +18,20 @@ public class ClientController {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   @Autowired private ClientService clientService;
 
+//  @GetMapping("/api/clients")
+//  public Page<ClientDetail> getAllClients(Pageable pageable) {
+//    logger.info("Page info - {}", pageable);
+//    return clientService.findAllClientDetails(pageable);
+//  }
+
   @GetMapping("/api/clients")
-  public Page<ClientDetail> getAllClients(Pageable pageable) {
+  public Page<OAuthClientDetail> getAllClients(Pageable pageable) {
     logger.info("Page info - {}", pageable);
-    return clientService.findAllClientDetails(pageable);
+    return clientService.findAllOAuthClientDetails(pageable);
   }
 
   @GetMapping("/api/clients/{oauth2ClientId}")
-  public ClientDetail getClient(@PathVariable String oauth2ClientId) {
-    return clientService.findClientDetail(oauth2ClientId).orElse(null);
+  public OAuthClientDetail getClient(@PathVariable String oauth2ClientId) {
+    return clientService.getOAuthClientDetail(oauth2ClientId).orElse(null);
   }
 }

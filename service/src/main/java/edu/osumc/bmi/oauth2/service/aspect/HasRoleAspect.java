@@ -87,7 +87,7 @@ public class HasRoleAspect {
     }
 
     Optional<Client> clientOptional =
-        clientService.findByOauth2ClientId(properties.getAuthServer().getClientId());
+        clientService.findByOAuth2ClientId(properties.getAuthServer().getClientId());
     if (!clientOptional.isPresent()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Client not exists.");
     }

@@ -33,7 +33,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Optional<Client> findByOauth2ClientId(String clientId) {
+    public Optional<Client> findByOAuth2ClientId(String clientId) {
         return clientRepository.findByOauth2ClientId(clientId);
     }
 
@@ -47,19 +47,14 @@ public class ClientServiceImpl implements ClientService {
         return oAuthClientDetailRepository.findAll(pageable);
     }
 
-    @Override
-    public Optional<ClientDetail> findClientDetail(String oauth2ClientId) {
-        return oAuthClientDetailRepository.findClientDetailByClientId(oauth2ClientId);
-    }
-
-    @Override
-    public Page<ClientDetail> findAllClientDetails(Pageable pageable) {
+    //@Override
+    public Page<OAuthClientDetail> findAllClientDetails(Pageable pageable) {
         // This is a join of OAuthClientDetail and Client, sorting by name = client.name
         Sort.Order nameOrder = pageable.getSort().getOrderFor("name");
         if (nameOrder != null) {
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 nameOrder.getDirection(), "client.name");
         }
-        return oAuthClientDetailRepository.findAllClientDetail(pageable);
+        return oAuthClientDetailRepository.findAll(pageable);
     }
 }

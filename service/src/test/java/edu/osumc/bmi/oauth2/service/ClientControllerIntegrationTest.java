@@ -43,11 +43,11 @@ public class ClientControllerIntegrationTest {
   @Test
   public void givenClients_whenFindAllClients_thenReturnJson() throws Exception {
 
-    ClientDetail clientDetail = new ClientDetail(null, null, null, null, null, null, null, null);
-    List<ClientDetail> clientDetailList = Collections.singletonList(clientDetail);
-    Page<ClientDetail> clientDetailPage = new PageImpl<>(clientDetailList);
+    OAuthClientDetail clientDetail = new OAuthClientDetail();
+    List<OAuthClientDetail> clientDetailList = Collections.singletonList(clientDetail);
+    Page<OAuthClientDetail> clientDetailPage = new PageImpl<>(clientDetailList);
 
-    when(clientService.findAllClientDetails(null)).thenReturn(clientDetailPage);
+    when(clientService.findAllOAuthClientDetails(null)).thenReturn(clientDetailPage);
 
     mvc.perform(get("/api/clients").contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized());

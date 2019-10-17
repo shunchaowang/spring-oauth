@@ -1,6 +1,7 @@
 package edu.osumc.bmi.oauth2.core.service;
 
 import edu.osumc.bmi.oauth2.core.data.ClientDetail;
+import edu.osumc.bmi.oauth2.core.domain.OAuthClientDetail;
 import edu.osumc.bmi.oauth2.core.repository.ClientRepository;
 import edu.osumc.bmi.oauth2.core.repository.OAuthClientDetailRepository;
 import org.apache.commons.text.RandomStringGenerator;
@@ -45,16 +46,20 @@ public class ClientServiceIntegrationTests {
         RandomStringGenerator rsg = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
 
         // mock oauthClientDetails Page
-        List<ClientDetail> clientDetailList = new ArrayList<>();
+        List<OAuthClientDetail> clientDetailList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            ClientDetail clientDetail = new ClientDetail(rsg.generate(8), true, clientId + " " + i,
-                null, null, null, null, null);
+//            ClientDetail clientDetail = new ClientDetail(rsg.generate(8), true, clientId + " " + i,
+//                null, null, null, null, null);
+
+//            clientDetailList.add(clientDetail);
+            OAuthClientDetail clientDetail = new OAuthClientDetail();
+            clientDetail.setClientId(clientId + " " + i);
             clientDetailList.add(clientDetail);
         }
 
-        Page<ClientDetail> clientDetails = new PageImpl<>(clientDetailList, firstPageWithTwoElementsSortByClientIdDesc, 10);
+        Page<OAuthClientDetail> clientDetails = new PageImpl<>(clientDetailList, firstPageWithTwoElementsSortByClientIdDesc, 10);
 
-        Mockito.when(oAuthClientDetailRepository.findAllClientDetail(firstPageWithTwoElementsSortByClientIdDesc))
+        Mockito.when(oAuthClientDetailRepository.findAll(firstPageWithTwoElementsSortByClientIdDesc))
             .thenReturn(clientDetails);
     }
 
@@ -63,8 +68,8 @@ public class ClientServiceIntegrationTests {
         // given
         // by setup
         // when
-        Page<ClientDetail> clientDetails =
-            clientService.findAllClientDetails(firstPageWithTwoElementsSortByClientIdDesc);
+        Page<OAuthClientDetail> clientDetails =
+            clientService.findAllOAuthClientDetails(firstPageWithTwoElementsSortByClientIdDesc);
         // then
         assertThat(clientDetails.getTotalElements()).isEqualTo(10);
         logger.debug("total elements - {}", clientDetails.getTotalElements());
@@ -75,22 +80,21 @@ public class ClientServiceIntegrationTests {
         logger.debug("content list size - {}", clientDetails.getContent().size());
         clientDetails.forEach(
             (clientDetail) -> {
-                logger.debug("client detail is named - {}", clientDetail.getName());
                 logger.debug("client id - {}", clientDetail.getClientId());
             });
     }
 
     @Test
-    public void updatesNameToClientName() {
+    public void whenSortByClientId_thenReturnPageableSortedByClientId() {
         // given
-        Pageable sortByName = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "name"));
+        Pageable sortByClientId = PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "clientId"));
         // when
-        Page<ClientDetail> clientDetails = clientService.findAllClientDetails(sortByName);
+        Page<OAuthClientDetail> clientDetails = clientService.findAllOAuthClientDetails(sortByClientId);
         // then
         ArgumentCaptor<Pageable> acPageable = ArgumentCaptor.forClass(Pageable.class);
-        verify(oAuthClientDetailRepository).findAllClientDetail(acPageable.capture());
+        verify(oAuthClientDetailRepository).findAll(acPageable.capture());
         Pageable expected = acPageable.getValue();
-        assertThat(expected.equals(PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "client.name"))));
+        assertThat(expected.equals(PageRequest.of(0, 2, Sort.by(Sort.Direction.DESC, "clientId"))));
     }
 
     @TestConfiguration
