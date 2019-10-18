@@ -1,6 +1,7 @@
 package edu.osumc.bmi.oauth2.service.web;
 
 import edu.osumc.bmi.oauth2.core.domain.User;
+import edu.osumc.bmi.oauth2.core.dto.UserDto;
 import edu.osumc.bmi.oauth2.core.service.UserService;
 import edu.osumc.bmi.oauth2.service.util.RequestUtils;
 import edu.osumc.bmi.oauth2.service.web.request.ChangePasswordForm;
@@ -9,10 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -106,5 +110,12 @@ public class UserController {
         ResponseEntity.status(HttpStatus.OK).body(username + " has successfully changed password"));
 
     return result;
+  }
+
+  @GetMapping("/api/users")
+  public Page<UserDto> getAllUsers(Pageable pageable) {
+    logger.info("UserDto pageable - {}", pageable);
+    logger.info("UserDto Page - {}", userService.getAll(pageable));
+    return userService.getAll(pageable);
   }
 }
