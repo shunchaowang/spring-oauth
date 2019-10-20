@@ -22,22 +22,22 @@ public class ClientRepositoryTests {
   @Autowired private UserRepository userRepository;
 
   @Test
-  public void testFindByOauth2ClientId() {
+  public void testFindByOAuth2ClientId() {
     // given
     Client client = new Client();
     client.setActive(true);
     client.setName("test-client");
-    client.setOauth2ClientId("test-oauth2-client");
+    client.setOAuth2ClientId("test-oauth2-client");
     clientRepository.save(client);
     // when
-    Client found = clientRepository.findByOauth2ClientId("test-oauth2-client").get();
+    Client found = clientRepository.findByOAuth2ClientId("test-oauth2-client").get();
     // then
-    assertThat(found.getOauth2ClientId().equals("test-oauth2-client"));
+    assertThat(found.getOAuth2ClientId().equals("test-oauth2-client"));
 
     found.setName("test-client-edit");
     clientRepository.save(found);
     found = clientRepository.findById(found.getId()).get();
-    assertThat(found.getOauth2ClientId().equals("test-oauth2-client"));
+    assertThat(found.getOAuth2ClientId().equals("test-oauth2-client"));
   }
 
   @Test
@@ -55,12 +55,12 @@ public class ClientRepositoryTests {
     Client client = new Client(userCreated);
     client.setActive(true);
     client.setName("test-client");
-    client.setOauth2ClientId("test-oauth2-client");
+    client.setOAuth2ClientId("test-oauth2-client");
     clientRepository.save(client);
     // when
-    Client clientCreated = clientRepository.findByOauth2ClientId("test-oauth2-client").get();
+    Client clientCreated = clientRepository.findByOAuth2ClientId("test-oauth2-client").get();
     // then
-    Assertions.assertThat(clientCreated.getOauth2ClientId().equals("test-oauth2-client"));
+    Assertions.assertThat(clientCreated.getOAuth2ClientId().equals("test-oauth2-client"));
     Assertions.assertThat(clientCreated.getOwner().getId() == userCreated.getId());
   }
 }

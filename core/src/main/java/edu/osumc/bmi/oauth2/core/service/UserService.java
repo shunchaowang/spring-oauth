@@ -2,7 +2,6 @@ package edu.osumc.bmi.oauth2.core.service;
 
 import edu.osumc.bmi.oauth2.core.domain.Role;
 import edu.osumc.bmi.oauth2.core.domain.User;
-import edu.osumc.bmi.oauth2.core.dto.UserInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,7 +18,7 @@ public interface UserService {
 
   Optional<User> get(String username);
 
-  Page<UserInfo> getAll(Pageable pageable);
+  Page<User> getAll(Pageable pageable);
 
   User update(User user) throws EntityNotFoundException;
 

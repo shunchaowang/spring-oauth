@@ -4,7 +4,6 @@ import edu.osumc.bmi.oauth2.core.Constants;
 import edu.osumc.bmi.oauth2.core.domain.Client;
 import edu.osumc.bmi.oauth2.core.domain.Role;
 import edu.osumc.bmi.oauth2.core.domain.User;
-import edu.osumc.bmi.oauth2.core.dto.UserInfo;
 import edu.osumc.bmi.oauth2.core.repository.ClientRepository;
 import edu.osumc.bmi.oauth2.core.repository.RoleRepository;
 import edu.osumc.bmi.oauth2.core.repository.UserRepository;
@@ -90,8 +89,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Page<UserInfo> getAll(Pageable pageable) {
-    return userRepository.fetchUserInfo(pageable);
+  public Page<User> getAll(Pageable pageable) {
+    return userRepository.findAll(pageable);
   }
 
   @Override

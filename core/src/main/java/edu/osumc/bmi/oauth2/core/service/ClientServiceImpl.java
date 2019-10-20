@@ -29,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   public Optional<Client> findByOAuth2ClientId(String clientId) {
-    return clientRepository.findByOauth2ClientId(clientId);
+    return clientRepository.findByOAuth2ClientId(clientId);
   }
 
   @Override

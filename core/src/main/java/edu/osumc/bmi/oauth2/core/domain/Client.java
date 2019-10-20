@@ -28,7 +28,7 @@ public class Client implements Serializable {
   private String name;
 
   @Column(name = "oauth2_client_id", nullable = false, unique = true)
-  private String oauth2ClientId;
+  private String oAuth2ClientId;
 
   @Column(nullable = false)
   private boolean active;
@@ -69,12 +69,12 @@ public class Client implements Serializable {
     this.name = name;
   }
 
-  public String getOauth2ClientId() {
-    return oauth2ClientId;
+  public String getOAuth2ClientId() {
+    return oAuth2ClientId;
   }
 
-  public void setOauth2ClientId(String oauth2ClientId) {
-    this.oauth2ClientId = oauth2ClientId;
+  public void setOAuth2ClientId(String oAuth2ClientId) {
+    this.oAuth2ClientId = oAuth2ClientId;
   }
 
   public boolean isActive() {
@@ -157,11 +157,11 @@ public class Client implements Serializable {
     Client client = (Client) o;
     return id == client.id
         && name.equals(client.name)
-        && oauth2ClientId.equals(client.oauth2ClientId);
+        && oAuth2ClientId.equals(client.oAuth2ClientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, oauth2ClientId);
+    return Objects.hash(id, name, oAuth2ClientId);
   }
 }

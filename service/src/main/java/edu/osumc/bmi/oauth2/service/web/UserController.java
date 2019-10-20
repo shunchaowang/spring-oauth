@@ -1,7 +1,6 @@
 package edu.osumc.bmi.oauth2.service.web;
 
 import edu.osumc.bmi.oauth2.core.domain.User;
-import edu.osumc.bmi.oauth2.core.dto.UserInfo;
 import edu.osumc.bmi.oauth2.core.service.UserService;
 import edu.osumc.bmi.oauth2.service.util.RequestUtils;
 import edu.osumc.bmi.oauth2.service.web.request.ChangePasswordForm;
@@ -113,7 +112,7 @@ public class UserController {
   }
 
   @GetMapping("/api/users")
-  public Page<UserInfo> getAllUsers(Pageable pageable) {
+  public Page<User> getAllUsers(Pageable pageable) {
     logger.info("UserDto pageable - {}", pageable);
     logger.info("UserDto Page - {}", userService.getAll(pageable));
     return userService.getAll(pageable);
