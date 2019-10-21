@@ -6,11 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -28,6 +30,9 @@ public class Role implements Serializable {
   @ManyToOne
   @JoinColumn(name = "client_id", nullable = false)
   private Client client;
+
+  @ManyToMany(mappedBy = "roles")
+  private Set<User> users;
 
   public Role() {}
 
@@ -61,6 +66,14 @@ public class Role implements Serializable {
 
   public void setClient(Client client) {
     this.client = client;
+  }
+
+  public Set<User> getUsers() {
+    return users;
+  }
+
+  public void setUsers(Set<User> users) {
+    this.users = users;
   }
 
   @Override
