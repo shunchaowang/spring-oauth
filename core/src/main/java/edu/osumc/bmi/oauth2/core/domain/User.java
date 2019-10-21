@@ -39,10 +39,10 @@ public class User implements Serializable {
 
   @Version private long version;
   // many to many association with extra columns
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<UserClient> userClients;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id", nullable = false),
