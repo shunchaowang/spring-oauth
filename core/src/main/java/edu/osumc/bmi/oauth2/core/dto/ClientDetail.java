@@ -6,13 +6,13 @@ import lombok.Value;
 public class ClientDetail {
   // attributes from client class
   String name;
-  Boolean active;
+  boolean active;
 
   // attributes from OAuth2ClientDetail class
   String clientId;
   String authorizedGrantTypes;
   String webServerRedirectUri;
-  Integer accessTokenValidity;
-  Integer refreshTokenValidity;
+  int accessTokenValidity;
+  int refreshTokenValidity;
   String autoApprove;
 }
