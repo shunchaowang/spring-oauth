@@ -24,6 +24,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.validation.Valid;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 
 @RestController
@@ -113,7 +114,7 @@ public class UserController {
   }
 
   @GetMapping("/api/users")
-  public Page<UserInfo> getAllUsers(Pageable pageable) {
-    return userService.getAll(pageable);
+  public CompletableFuture<Page<UserInfo>> getAllUsers(final Pageable pageable) {
+    return CompletableFuture.supplyAsync(() -> userService.getAll(pageable));
   }
 }
