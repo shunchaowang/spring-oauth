@@ -90,6 +90,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public UserInfo fetch(String username) {
+    return userRepository.fetchByUsername(username);
+  }
+
+  @Override
   public Page<UserInfo> getAll(Pageable pageable) {
     return userRepository.fetchAll(pageable);
   }

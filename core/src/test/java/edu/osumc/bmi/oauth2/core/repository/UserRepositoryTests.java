@@ -2,6 +2,7 @@ package edu.osumc.bmi.oauth2.core.repository;
 
 import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.domain.User.UserBuilder;
+import edu.osumc.bmi.oauth2.core.dto.UserInfo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,24 @@ public class UserRepositoryTests {
 
   @Test
   public void testFindByUsername() {
-
-    UserBuilder userBuilder = new UserBuilder();
-
-    User user = userBuilder.username("tom").password("tom").active(true).build();
-
-    user = userRepository.save(user);
+    User user = user();
     User found = userRepository.findById(user.getId()).get();
-
     assertThat(found.getUsername()).isEqualTo("tom");
+  }
+
+  @Test
+  public void givenUser_whenFetchByUsername_thenReturnUserInfo() {
+    User user = user();
+    System.out.println("user created - " + user.getUsername() + " " + user.getId());
+    User userFound = userRepository.findByUsername("tom").get();
+    System.out.println("user found - " + userFound.getUsername());
+    UserInfo userInfo = userRepository.fetchByUsername("tom");
+    System.out.println("user fetched - " + userInfo);
+  }
+
+  private User user() {
+    UserBuilder userBuilder = new UserBuilder();
+    User user = userBuilder.username("tom").password("tom").active(true).build();
+    return userRepository.save(user);
   }
 }

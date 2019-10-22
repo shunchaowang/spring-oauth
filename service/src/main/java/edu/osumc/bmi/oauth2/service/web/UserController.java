@@ -4,6 +4,7 @@ import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.dto.UserInfo;
 import edu.osumc.bmi.oauth2.core.service.UserService;
 import edu.osumc.bmi.oauth2.service.util.RequestUtils;
+import edu.osumc.bmi.oauth2.service.web.dto.UserView;
 import edu.osumc.bmi.oauth2.service.web.request.ChangePasswordForm;
 import edu.osumc.bmi.oauth2.service.web.request.RegisterUserForm;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -113,9 +117,23 @@ public class UserController {
   }
 
   @GetMapping("/api/users")
-  public Page<UserInfo> getAllUsers(Pageable pageable) {
-    logger.info("UserDto pageable - {}", pageable);
-    logger.info("UserDto Page - {}", userService.getAll(pageable));
-    return userService.getAll(pageable);
+  public Page<UserView> getAllUsers(Pageable pageable) {
+    userService
+        .getAll(pageable)
+        .forEach(userInfo -> logger.info("user role - {}", userInfo.getRoles()));
+    Page<UserInfo> userInfoPage = userService.getAll(pageable);
+    List<UserView> userViews =
+        userInfoPage
+            .get()
+            .map(
+                userInfo ->
+                    new UserView(
+                        userInfo.getUsername(),
+                        userInfo.getRoles().stream()
+                            .map(UserInfo.RoleInfo::getName)
+                            .collect(Collectors.joining())))
+            .collect(Collectors.toList());
+    Page<UserView> page = new PageImpl<>(userViews, pageable, userInfoPage.getTotalElements());
+    return page;
   }
 }

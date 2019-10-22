@@ -21,6 +21,8 @@ public interface UserService {
 
   Page<UserInfo> getAll(Pageable pageable);
 
+  UserInfo fetch(String username);
+
   User update(User user) throws EntityNotFoundException;
 
   /*

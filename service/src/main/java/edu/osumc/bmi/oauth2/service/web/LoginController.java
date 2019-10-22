@@ -3,6 +3,7 @@ package edu.osumc.bmi.oauth2.service.web;
 import edu.osumc.bmi.oauth2.core.aspect.Timed;
 import edu.osumc.bmi.oauth2.core.domain.Role;
 import edu.osumc.bmi.oauth2.core.domain.User;
+import edu.osumc.bmi.oauth2.core.dto.UserInfo;
 import edu.osumc.bmi.oauth2.core.service.UserService;
 import edu.osumc.bmi.oauth2.service.aspect.HasRole;
 import edu.osumc.bmi.oauth2.service.login.CallbackHandler;
@@ -39,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 
 @Controller
 public class LoginController {
@@ -83,21 +85,14 @@ public class LoginController {
               } else {
                 info.put("name", (String) user.get("name"));
               }
-              Optional<User> userOptional = userService.get((String) user.get("name"));
-              if (!userOptional.isPresent()) {
+              UserInfo userInfo = userService.fetch((String)user.get("name"));
+              if (userInfo == null) {
                 result.setResult(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
                 return;
               }
-              User localUser = userOptional.get();
-              Set<Role> roles = localUser.getRoles();
-              Set<String> localRoles = new HashSet<>();
-              roles.stream()
-                  .forEach(
-                      (role) -> {
-                        localRoles.add(role.getName());
-                      });
-              info.put("role", String.join(",", localRoles));
-              result.setResult(ResponseEntity.status(HttpStatus.OK).body(info));
+              info.put("role", userInfo.getRoles().stream()
+                      .map(UserInfo.RoleInfo::getName).collect(Collectors.joining()));
+                result.setResult(ResponseEntity.status(HttpStatus.OK).body(info));
             });
 
     return result;
