@@ -1,8 +1,6 @@
 package edu.osumc.bmi.oauth2.service.web;
 
 import edu.osumc.bmi.oauth2.core.aspect.Timed;
-import edu.osumc.bmi.oauth2.core.domain.Role;
-import edu.osumc.bmi.oauth2.core.domain.User;
 import edu.osumc.bmi.oauth2.core.dto.UserInfo;
 import edu.osumc.bmi.oauth2.core.service.UserService;
 import edu.osumc.bmi.oauth2.service.aspect.HasRole;
@@ -35,12 +33,8 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 
 @Controller
 public class LoginController {
@@ -85,14 +79,13 @@ public class LoginController {
               } else {
                 info.put("name", (String) user.get("name"));
               }
-              UserInfo userInfo = userService.fetch((String)user.get("name"));
+              UserInfo userInfo = userService.fetch((String) user.get("name"));
               if (userInfo == null) {
                 result.setResult(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
                 return;
               }
-              info.put("role", userInfo.getRoles().stream()
-                      .map(UserInfo.RoleInfo::getName).collect(Collectors.joining("|")));
-                result.setResult(ResponseEntity.status(HttpStatus.OK).body(info));
+              info.put("role", userInfo.getRoleName());
+              result.setResult(ResponseEntity.status(HttpStatus.OK).body(info));
             });
 
     return result;
