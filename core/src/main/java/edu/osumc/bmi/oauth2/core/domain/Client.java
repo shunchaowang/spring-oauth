@@ -38,7 +38,7 @@ public class Client implements Serializable {
   @OneToMany(mappedBy = "client")
   private Set<Role> roles;
 
-  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<UserClient> userClients;
 
   public Client() {

@@ -14,6 +14,8 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
   Optional<User> findByUsername(String username);
 
-  @Query("SELECT DISTINCT user FROM User user JOIN user.roles role")
+  @Query(
+      value = "select u from User u left join fetch u.roles",
+      countQuery = "select count(u) from User u")
   Page<User> findAll(Pageable pageable);
 }
