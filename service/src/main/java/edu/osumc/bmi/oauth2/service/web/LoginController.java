@@ -91,7 +91,7 @@ public class LoginController {
                 return;
               }
               info.put("role", userInfo.getRoles().stream()
-                      .map(UserInfo.RoleInfo::getName).collect(Collectors.joining()));
+                      .map(UserInfo.RoleInfo::getName).collect(Collectors.joining("|")));
                 result.setResult(ResponseEntity.status(HttpStatus.OK).body(info));
             });
 
