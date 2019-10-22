@@ -19,7 +19,7 @@ public interface UserService {
 
   Optional<User> get(String username);
 
-  Page<User> getAll(Pageable pageable);
+  Page<UserInfo> getAll(Pageable pageable);
 
   User update(User user) throws EntityNotFoundException;
 
