@@ -7,6 +7,8 @@ public interface UserInfo {
 
   String getUsername();
 
+  boolean getActive();
+
   Set<RoleInfo> getRoles();
 
   default String getRoleName() {

@@ -16,7 +16,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
   String findUserWithRoleByUsernameQuery =
       "select u.username as username, r as roles from User u join u.roles r where u.username = ?1";
   String findUserWithRoleQuery =
-      "select u.username as username, r as roles from User u join u.roles r";
+      "select u.username as username, r as roles, u.active as active from User u join u.roles r";
   String findUserCountQuery = "select count(u) from User u";
 
   Optional<User> findByUsername(String username);
