@@ -90,8 +90,9 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserInfo fetch(String username) {
-    return userRepository.fetchByUsername(username);
+  public Optional<UserInfo> fetch(String username) {
+    UserInfo userInfo = userRepository.fetchByUsername(username);
+    return userInfo != null ? Optional.of(userInfo) : Optional.empty();
   }
 
   @Override

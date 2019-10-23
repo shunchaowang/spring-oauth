@@ -34,6 +34,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
 @Controller
@@ -79,12 +80,12 @@ public class LoginController {
               } else {
                 info.put("name", (String) user.get("name"));
               }
-              UserInfo userInfo = userService.fetch((String) user.get("name"));
-              if (userInfo == null) {
+              Optional<UserInfo> userInfoOptional = userService.fetch((String) user.get("name"));
+              if (!userInfoOptional.isPresent()) {
                 result.setResult(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
                 return;
               }
-              info.put("role", userInfo.getRoleName());
+              info.put("role", userInfoOptional.get().getRoleName());
               result.setResult(ResponseEntity.status(HttpStatus.OK).body(info));
             });
 
